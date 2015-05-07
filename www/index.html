@@ -4,13 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
-
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
-    -->
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -21,14 +19,20 @@
     <!-- your app's js -->
     <script src="js/app.js"></script>
   </head>
-  <body ng-app="starter">
-
-    <ion-pane>
-      <ion-header-bar class="bar-stable">
-        <h1 class="title">Ionic Blank Starter</h1>
-      </ion-header-bar>
-      <ion-content>
-      </ion-content>
-    </ion-pane>
+  <ion-header-bar class="bar-positive">
+    <img src="..\img\LogoHeader.png" class="logo">
+  </ion-header-bar>
+  <ion-nav-view></ion-nav-view>
+  <body ng-app="xenon">
+    <ion-tabs class="tabs-positive tabs-icon-top">
+      <ion-tab title="Plan" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="#/tab/plan">
+      </ion-tab>
+      <ion-tab title="Contact" icon-on="ion-ios-email" icon-off="ion-ios-email-outline" href="#/tab/contact">
+      </ion-tab>
+      <ion-tab title="Discover" icon-on="ion-ios-football" icon-off="ion-ios-football-outline" href="#/tab/discover">
+      </ion-tab>
+      <ion-tab title="About" icon-on="ion-ios-information" icon-off="ion-ios-information-outline" href="#/tab/discover">
+      </ion-tab>
+    </ion-tabs>
   </body>
 </html>
