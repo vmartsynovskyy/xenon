@@ -12,6 +12,7 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic/js/angular/angular-resource.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -19,20 +20,26 @@
     <!-- your app's js -->
     <script src="js/app.js"></script>
   </head>
+
   <ion-header-bar class="bar-positive">
-    <img src="..\img\LogoHeader.png" class="logo">
+    <img ng-src="img\LogoHeader.png" class="logo">
   </ion-header-bar>
-  <ion-nav-view></ion-nav-view>
+
   <body ng-app="xenon">
     <ion-tabs class="tabs-positive tabs-icon-top">
-      <ion-tab title="Plan" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="#/tab/plan">
-      </ion-tab>
-      <ion-tab title="Contact" icon-on="ion-ios-email" icon-off="ion-ios-email-outline" href="#/tab/contact">
-      </ion-tab>
-      <ion-tab title="Discover" icon-on="ion-ios-football" icon-off="ion-ios-football-outline" href="#/tab/discover">
-      </ion-tab>
-      <ion-tab title="About" icon-on="ion-ios-information" icon-off="ion-ios-information-outline" href="#/tab/discover">
-      </ion-tab>
+        <ion-tab title="Plan" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" ui-sref="plan">
+          <!-- <ion-nav-view name="day"></ion-nav-view> -->
+          <ion-nav-view name="week"></ion-nav-view>
+        </ion-tab>
+        <ion-tab title="Contact" icon-on="ion-ios-email" icon-off="ion-ios-email-outline" ui-sref="contact">
+          <ion-nav-view name="contact"></ion-nav-view>
+        </ion-tab>
+        <ion-tab title="Discover" icon-on="ion-ios-world" icon-off="ion-ios-world-outline" ui-sref="discover">
+          <ion-nav-view name="discover"></ion-nav-view>
+        </ion-tab>
+        <ion-tab title="About" icon-on="ion-ios-information" icon-off="ion-ios-information-outline" ui-sref="about">
+          <ion-nav-view name="about"></ion-nav-view>
+        </ion-tab>
     </ion-tabs>
   </body>
 </html>

@@ -1,0 +1,22 @@
+<ion-view>
+  <ion-content class="week-background">
+    <span>
+        <a class="week-day" ng-repeat="day in days">
+            <div class="date">
+                <span class="day">{{day.getShortDay()}}</span>
+                <span class="num">{{day.getTwoDigitDate()}}</span>
+                <span class="month">{{day.getShortMonth()}}</span>
+            </div>
+            <div class="info">
+                <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
+                <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30pm - 3:00pm</div>
+                <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
+                <div class="name" ng-if="day.name">{{day.name}}</div>
+            </div>
+            <div class="announcement">
+                {{day.announcement}}
+            </div>
+        </a>
+    </span>
+  </ion-content>
+</ion-view>

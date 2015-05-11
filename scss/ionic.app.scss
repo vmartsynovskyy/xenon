@@ -17,9 +17,106 @@ $dark:                            #444 !default;
 
 $positive:                        #37bc61 !default;
 $calm:                            #007F0E !default;
+$darkgrey:                        #333 !default;
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+
+$light_font: 'Roboto-Light', sans-serif;
+$thin_font: 'Roboto-Thin', sans-serif;
+
+@font-face {
+    font-family: 'Roboto-Light';
+    src: url('../fonts/Roboto-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto-Thin';
+    src: url('../fonts/Roboto-Thin.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+    
+.week-background{
+    background-color: $stable;
+}
+
+.logo {
+    margin-left: auto;
+    margin-right: auto;
+    height: 150%;
+}
+
+.week-day {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 100%;
+    overflow: auto;
+    background-color: $light;
+    text-decoration: none;
+}
+
+.week-day .date {
+    text-align: center;
+    float: left;
+}
+
+.week-day .announcement {
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    font: 95% $light_font;
+    color: $darkgrey
+}
+
+.week-day .info {
+    float: right;
+    text-align: right;
+}
+
+.info .time {
+    margin: 0;
+    font: 95% $light_font;
+    color: $darkgrey
+}
+
+.info .rotation {
+    font-family: 'Roboto-Light';
+    font: 300% $thin_font;
+}
+
+.info .no-school {
+    font-family: 'Roboto-Light';
+    font: 100% $thin_font;
+}
+
+.info .name {
+    margin: 0;
+    font: 95% $light_font;
+    color: $darkgrey
+}
+
+.date .day {
+    text-transform: uppercase;
+    font: 120% $light_font;
+}
+
+.date .num {
+    display: block;
+    background: #37BC61;
+    padding: 8px 10px;
+    color: $light;
+    border-radius: 50%;
+    font: 120% $light_font;
+}
+
+.date .month {
+    text-transform: uppercase;
+    font: 120% $light_font;
+}
