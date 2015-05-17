@@ -5,7 +5,6 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
     
-    <link href="css/style.css" rel="stylesheet">
 
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -13,6 +12,7 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ionic/js/angular/angular-resource.js"></script>
+    <script src="lib/ionic/js/angular/angular-route.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -27,8 +27,8 @@
 
   <body ng-app="xenon">
     <ion-tabs class="tabs-positive tabs-icon-top">
-        <ion-tab title="Plan" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" ui-sref="plan">
-          <!-- <ion-nav-view name="day"></ion-nav-view> -->
+        <ion-tab title="Plan" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="week">
+          <ion-nav-view name="day"></ion-nav-view>
           <ion-nav-view name="week"></ion-nav-view>
         </ion-tab>
         <ion-tab title="Contact" icon-on="ion-ios-email" icon-off="ion-ios-email-outline" ui-sref="contact">

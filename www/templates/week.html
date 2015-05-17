@@ -1,22 +1,27 @@
-<ion-view>
-  <ion-content class="week-background">
-    <span>
-        <a class="week-day" ng-repeat="day in days">
-            <div class="date">
-                <span class="day">{{day.getShortDay()}}</span>
-                <span class="num">{{day.getTwoDigitDate()}}</span>
-                <span class="month">{{day.getShortMonth()}}</span>
-            </div>
-            <div class="info">
+<ion-view auto-scroll="false">
+  <ion-content has-bouncing='false' class="week-background" on-swipe-left="incrementWeek()" on-swipe-right="decrementWeek()">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    <a class="week-day" ng-repeat="day in days" ng-class="{'today': day.today}">
+        <div class="date">
+            <span class="day">{{day.getShortDay()}}</span>
+            <span class="num">{{day.getTwoDigitDate()}}</span>
+            <span class="month">{{day.getShortMonth()}}</span>
+        </div>
+        <div class="info">
+            <span ng-if="day.day_type !== 'holiday'">
                 <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
                 <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30pm - 3:00pm</div>
                 <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
-                <div class="name" ng-if="day.name">{{day.name}}</div>
-            </div>
-            <div class="announcement">
-                {{day.announcement}}
-            </div>
-        </a>
-    </span>
+            </span>
+            <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>
+        </div>
+        <div class="big-name" ng-if="day.day_type === 'holiday'">{{day.name}}</div>
+        <div class="announcement">
+            {{day.announcement}}
+        </div>
+    </a>
   </ion-content>
 </ion-view>
