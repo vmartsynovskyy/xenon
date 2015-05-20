@@ -103,8 +103,6 @@ function twentyFourHourToAmPm(timestring) {
 var xenon = angular.module('xenon', ['ionic', 'ngResource']);
 
 xenon.config(function($stateProvider, $urlRouterProvider, $anchorScrollProvider) {
-  $urlRouterProvider.otherwise("/");
-
   $anchorScrollProvider.disableAutoScrolling()
 
   $stateProvider.state('week', {
@@ -118,9 +116,9 @@ xenon.config(function($stateProvider, $urlRouterProvider, $anchorScrollProvider)
   });
 
   $stateProvider.state('day', {
-    url: '/day',
+    url: '/day?date',
     views: {
-      'day': {
+      'week': {
         templateUrl: "templates/day.html",
         controller: 'DayCtrl'
       }
@@ -135,16 +133,43 @@ xenon.factory('Day', function($resource, $cacheFactory) {
   });
 });
 
-xenon.controller('DayCtrl', ['$scope', 'Day', function ($scope, Day) {
-
+xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$ionicPopup',
+  function ($scope, $location, $cacheFactory, Day, $ionicPopup) {
+    function renderDayFromDate(date_arg){
+      // sets all $scope variables for day.html template based on date_arg
+      date_arg.setHours(0, 0, 0, 0);
+      $scope.day = date_arg;
+      $scope.day.rotation = $scope.date.getRotation();
+      if ($scope.day.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
+          $scope.day.today = true;
+      }
+      var web_day = Day.getDay({date: $scope.date.getDate(), month: $scope.date.getMonth() + 1, year: $scope.date.getFullYear()}, function (result) {
+        // changes $scope.date once data is retrieved from web API
+        if (result.count > 0) {
+          $scope.date.name = result.results[0].name;
+          $scope.date.day_type = result.results[0].day_type;  
+          $scope.date.announcement = result.results[0].announcement;
+          if (result.results[0].school_start_time && result.results[0].school_end_time) {
+            $scope.date.school_start_time = result.results[0].school_start_time;
+            $scope.date.school_end_time = result.results[0].school_end_time;
+          }
+        }
+      });
+    }
+    if (!$location.search().date) {
+      renderDayFromDate(new Date(Date.now()).getStartOfWeek());
+    } else {
+      renderDayFromDate(new Date($location.search().date).getStartOfWeek()); 
+    }
 }]);
 
-xenon.controller('WeekCtrl',['$scope', '$location', '$ionicViewSwitcher', '$cacheFactory', 'Day',
-  function ($scope, $location, $ionicViewSwitcher, $cacheFactory, Day) {
+xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$ionicPopup',
+  function ($scope, $location, $cacheFactory, Day, $ionicPopup) {
     function renderWeekFromDate(date_arg) {
+      // sets all $scope variables for week.html template based on date_arg
       $scope.days = [];
       var days = [];
-      date_arg.setHours(0,0,0,0);
+      date_arg.setHours(0, 0, 0, 0);
       var next_date = date_arg;
       for (var i = 0; i < 7; i++) {
         var date = new Date(next_date);
@@ -158,6 +183,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$ionicViewSwitcher', '$cach
         var web_day = Day.getDay({date: date.getDate(), month: date.getMonth() + 1, year: date.getFullYear()}, function (result) {
           if (result.count > 0) {
             for (var iter = 0; iter < 7; iter++) {
+              // changes $scope.days when data is retrieved from web API
               if(new Date(result.results[0].date + " PDT").getDate() === $scope.days[iter].getDate()) {
                 $scope.days[iter].name = result.results[0].name;
                 $scope.days[iter].day_type = result.results[0].day_type;
@@ -175,7 +201,18 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$ionicViewSwitcher', '$cach
     }
 
     $scope.doRefresh = function() {
-      $cacheFactory.get('days').removeAll();
+      if (navigator.connection.type === "none") {
+        $ionicPopup.show({
+          title: "No Internet Connection",
+          subTitle: "Refresh again when you have an internet connection to get latest information",
+          scope: $scope,
+          buttons: [
+          { text: 'Ok'},
+          ],
+        })
+      } else {
+        $cacheFactory.get('days').removeAll();
+      }
       $scope.$broadcast('scroll.refreshComplete');
     }
 
@@ -187,6 +224,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$ionicViewSwitcher', '$cach
       dateToRender.setDate(dateToRender.getDate() + 7);
       $location.search('date', dateToRender.valueOf());
     }
+
     $scope.decrementWeek = function() {
       if (!$location.search().date) {
         $location.search('date', Date.now());
@@ -195,10 +233,13 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$ionicViewSwitcher', '$cach
       dateToRender.setDate(dateToRender.getDate() - 7);
       $location.search('date', dateToRender.valueOf());
     }
+
+    console.log('wut');
     if (!$location.search().date) {
-      $location.search('date', Date.now());
+      renderWeekFromDate(new Date(Date.now()).getStartOfWeek());
+    } else {
+      renderWeekFromDate(new Date($location.search().date).getStartOfWeek()); 
     }
-    renderWeekFromDate(new Date($location.search().date).getStartOfWeek());
 }]);
 
 

@@ -4,7 +4,7 @@
     pulling-text="Pull to refresh..."
     on-refresh="doRefresh()">
     </ion-refresher>
-    <a class="week-day" ng-repeat="day in days" ng-class="{'today': day.today}">
+    <a class="week-day" ng-repeat="day in days" ng-class="{'today': day.today}" ui-sref="day({date: day.valueOf()})">
         <div class="date">
             <span class="day">{{day.getShortDay()}}</span>
             <span class="num">{{day.getTwoDigitDate()}}</span>
