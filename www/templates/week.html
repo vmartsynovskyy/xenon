@@ -1,4 +1,7 @@
-<ion-view auto-scroll="false">
+<ion-view>
+  <ion-nav-title>
+    <img ng-src="../img/LogoHeader.png" class="logo">
+  </ion-nav-title>
   <ion-content has-bouncing='false' class="week-background" on-swipe-left="incrementWeek()" on-swipe-right="decrementWeek()">
     <ion-refresher
     pulling-text="Pull to refresh..."
@@ -6,7 +9,7 @@
     </ion-refresher>
     <a class="week-day" ng-repeat="day in days" ng-class="{'today': day.today}" ui-sref="day({date: day.valueOf()})">
         <div class="date">
-            <span class="day">{{day.getShortDay()}}</span>
+            <span class="display-day">{{day.getShortDay()}}</span>
             <span class="num">{{day.getTwoDigitDate()}}</span>
             <span class="month">{{day.getShortMonth()}}</span>
         </div>

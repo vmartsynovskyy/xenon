@@ -28,6 +28,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 $light_font: 'Roboto-Light', sans-serif;
 $thin_font: 'Roboto-Thin', sans-serif;
+$bold_font: 'Roboto-Bold', sans-serif;
 
 @font-face {
     font-family: 'Roboto-Light';
@@ -42,7 +43,14 @@ $thin_font: 'Roboto-Thin', sans-serif;
     font-weight: normal;
     font-style: normal;
 }
-    
+
+@font-face {
+    font-family: 'Roboto-Bold';
+    src: url('../fonts/Roboto-.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .week-background{
     background-color: $stable;
 }
@@ -50,7 +58,7 @@ $thin_font: 'Roboto-Thin', sans-serif;
 .logo {
     margin-left: auto;
     margin-right: auto;
-    height: 150%;
+    height: 100%;
 }
 
 .week-day {
@@ -69,6 +77,47 @@ $thin_font: 'Roboto-Thin', sans-serif;
 
 .today {
     background-color: $selected;
+}
+
+.day .announcement {
+    font: 95% $light_font;
+    color: $darkgrey
+}
+
+.block {
+    padding: 15px;
+    margin-top: 15px;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.2s;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    background-color: $light;
+}
+
+.block .rotation {
+    font: 300% $thin_font;
+    color: $darkgrey;
+    float: left;
+}
+
+.block .time {
+    float: right;
+    margin: 0;
+    font: 95% $light_font;
+    color: $darkgrey
+}
+
+.block .name {
+    padding-left: 10px;
+    font: 120% $bold_font;
+    color: $darkgrey
+}
+
+.block .info {
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    font: 95% $light_font;
+    color: $darkgrey
 }
 
 .week-day .date {
@@ -96,12 +145,11 @@ $thin_font: 'Roboto-Thin', sans-serif;
 }
 
 .info .rotation {
-    font-family: 'Roboto-Light';
     font: 300% $thin_font;
+    color: $darkgrey;
 }
 
 .info .no-school {
-    font-family: 'Roboto-Light';
     font: 100% $thin_font;
 }
 
@@ -120,9 +168,10 @@ $thin_font: 'Roboto-Thin', sans-serif;
     color: $darkgrey
 }
 
-.date .day {
+.date .display-day {
     text-transform: uppercase;
     font: 120% $light_font;
+    color: $darkgrey;
 }
 
 .date .num {
@@ -140,6 +189,7 @@ $thin_font: 'Roboto-Thin', sans-serif;
 .date .month {
     text-transform: uppercase;
     font: 120% $light_font;
+    color: $darkgrey;
 }
 
 .scroll-bar-indicator

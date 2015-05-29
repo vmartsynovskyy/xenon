@@ -1,5 +1,31 @@
-<ion-view title="{{day}}">
-  <ion-content padding="true">
-    day
-  </ion-content>
+<ion-view title="{{day.getPrettified()}}">
+    <ion-content padding="true">
+        <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="doRefresh()">
+        </ion-refresher>
+        <div class="day">
+            <div ng-if="day.name" class="day-name">
+                {{day.name}}
+            </div>
+            <div ng-if="day.announcement" class="announcement">
+                {{day.announcement}}
+            </div>
+            <div class="blocks-container" ng-if="day.blocks">
+                <div class="block" ng-repeat="block in day.blocks">
+                    <div ng-if="block.hasOwnProperty('start_time')">
+                        <div class="rotation">{{block.rotation}}</div>
+                        <div class="time">{{toAmPm(block.start_time)}} - {{toAmPm(block.end_time)}}</div>
+                    </div>
+                    <div ng-if="block.hasOwnProperty('time')">
+                        <div class="name">{{block.name}}</div>
+                        <div class="info">
+                            {{block.info}}
+                        </div>
+                        <div class="time">{{toAmPm(block.time)}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>
