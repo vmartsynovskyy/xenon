@@ -221,57 +221,58 @@ function compareBlockTimes(block1, block2) {
     }    
 }
 
-var xenon = angular.module('xenon', ['ionic', 'ngResource']);
+var xenon = angular.module('xenon', ['ionic', 'ngResource', 'angular-cache']);
 
-xenon.config(function($stateProvider) {
-  $stateProvider.state('week', {
-    url: '/week?date',
-    views: {
-      'week': {
-        templateUrl: 'templates/week.html',
-        controller: 'WeekCtrl'
-      },
-    }
-  });
-
-  $stateProvider.state('day', {
-    url: '/day?date',
-    views: {
-      'week': {
-        templateUrl: 'templates/day.html',
-        controller: 'DayCtrl'
-      }
-    }
-  });
+xenon.config(function($stateProvider, CacheFactoryProvider) {
+    angular.extend(CacheFactoryProvider.defaults, {storageMode: 'localStorage'});
+    $stateProvider.state('week', {
+        url: '/week?date',
+            views: {
+              'week': {
+                    templateUrl: 'templates/week.html',
+                    controller: 'WeekCtrl'
+              },
+        }
+    });
     
-  $stateProvider.state('contact', {
-    url: '/contact',
-    views: {
-      'contact': {
-        templateUrl: 'templates/contact.html',
-        controller: 'ContactCtrl'
-      },
-    }
-  });
+    $stateProvider.state('day', {
+        url: '/day?date',
+        views: {
+            'week': {
+                templateUrl: 'templates/day.html',
+                controller: 'DayCtrl'
+            }
+        }
+    });
+    
+    $stateProvider.state('contact', {
+        url: '/contact',
+        views: {
+            'contact': {
+                templateUrl: 'templates/contact.html',
+                controller: 'ContactCtrl'
+            },
+        }
+    });
 });
 
-xenon.factory('Day', function($resource, $cacheFactory) {
-  var days_cache = $cacheFactory('days');
-  return $resource('http://107.170.252.240/days/', {}, {
-    getDay: {cache: days_cache, isArray: true, method: 'GET', url:'http://107.170.252.240/days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
-  });
+xenon.factory('Day', function($resource, CacheFactory) {
+    CacheFactory('days');
+    return $resource('http://107.170.252.240/days/', {}, {
+        getDay: {cache: CacheFactory.get('days'), isArray: true, method: 'GET', url:'http://107.170.252.240/days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
+    });
 });
 
-xenon.factory('Staff', function($resource, $cacheFactory) {
-  var staff_cache = $cacheFactory('staff');
-  return $resource('http://107.170.252.240/staff/', {}, {
-    getStaff: {cache: staff_cache, isArray: true, method: 'GET', url:'http://107.170.252.240/staff/'},
-  });
+xenon.factory('Staff', function($resource, CacheFactory) {
+    CacheFactory('staff');
+    return $resource('http://107.170.252.240/staff/', {}, {
+        getStaff: {cache: CacheFactory.get('staff'), isArray: true, method: 'GET', url:'http://107.170.252.240/staff/'},
+    });
 });
 
-xenon.controller('ContactCtrl', ['$scope', '$location', '$cacheFactory', 'Staff', '$ionicPopup',
-    function($scope, $location, $cacheFactory, Staff, $ionicPopup) {
-        function getStaffFromWeb() {
+xenon.controller('ContactCtrl', ['$scope', '$location', 'CacheFactory', 'Staff', '$ionicPopup',
+    function($scope, $location, CacheFactory, Staff, $ionicPopup) {
+        function setStaffFromWeb() {
             Staff.getStaff(function(result) {
                 if (result.length > 0) {
                     $scope.staff = result;
@@ -281,7 +282,7 @@ xenon.controller('ContactCtrl', ['$scope', '$location', '$cacheFactory', 'Staff'
                 // TODO: DO SOMETHING ON ERROR
             });
         }
-        getStaffFromWeb();
+        setStaffFromWeb();
         $scope.doRefresh = function() {
             if (navigator.connection.type === 'none') {
                 $ionicPopup.show({
@@ -289,22 +290,22 @@ xenon.controller('ContactCtrl', ['$scope', '$location', '$cacheFactory', 'Staff'
                   subTitle: 'Refresh again when you have an internet connection to get latest information',
                   scope: $scope,
                   buttons: [
-                  { text: 'Ok'},
+                  {text: 'Ok'},
                 ]});
             } else {
                 try {
-                    $cacheFactory.get('staff').removeAll();
+                    CacheFactory.get('staff').removeAll();
                 } catch (e) {
                     console.log(e);
                 }
             }
-            getStaffFromWeb();
+            setStaffFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
         }
 }]);
 
-xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$ionicPopup',
-    function ($scope, $location, $cacheFactory, Day, $ionicPopup) {
+xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup',
+    function ($scope, $location, CacheFactory, Day, $ionicPopup) {
       function setDayFromWeb() {
         Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()}, 
         function (result) {
@@ -357,22 +358,22 @@ xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$io
               subTitle: 'Refresh again when you have an internet connection to get latest information',
               scope: $scope,
               buttons: [
-              { text: 'Ok'},
+              {text: 'Ok'},
             ]});
         } else {
             try {
-                $cacheFactory.get('days').destroy();
+                CacheFactory.get('days').removeAll();
             } catch (e) {
                 console.log(e);
             }
         }
-        $scope.$apply();
+        setDayFromWeb();
         $scope.$broadcast('scroll.refreshComplete');
-    };
+    }
 }]);
 
-xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$ionicPopup',
-    function ($scope, $location, $cacheFactory, Day, $ionicPopup) {
+xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup',
+    function ($scope, $location, CacheFactory, Day, $ionicPopup) {
         function renderWeekFromDate(date_arg) {
             // sets all $scope variables for week.html template based on date_arg
             $scope.days = [];
@@ -422,12 +423,18 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$io
                 ]});
             } else {
                 try {
-                    $cacheFactory.get('days').destroy();
+                    CacheFactory.get('days').removeAll();
                 } catch (e) {
                     console.log(e);
                 }
             }
-            $scope.$apply();
+            if (!$location.search().date) {
+                $scope.weekStart = new Date(Date.now()).getStartOfWeek();
+                renderWeekFromDate($scope.weekStart);
+            } else {
+                $scope.weekStart = new Date(parseInt($location.search().date)).getStartOfWeek();
+                renderWeekFromDate($scope.weekStart);
+            }
             $scope.$broadcast('scroll.refreshComplete');
         };
 
@@ -454,7 +461,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$io
             renderWeekFromDate($scope.weekStart);
         } else {
             $scope.weekStart = new Date(parseInt($location.search().date)).getStartOfWeek();
-            renderWeekFromDate($scope.weekStart); 
+            renderWeekFromDate($scope.weekStart);
         }
 }]);
 
