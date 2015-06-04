@@ -7693,6 +7693,27 @@ a.button {
   font-weight: normal;
   font-style: normal; }
 
+.staff-section {
+  font: 250% 'Roboto-Thin', sans-serif;
+  width: 100%;
+  margin: 10px; }
+
+.staff-container {
+  width: 100%; }
+
+.info-arrow {
+  float: right; }
+
+.staff-background {
+  background-color: #f8f8f8; }
+
+.staff-member {
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.2s;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  margin-bottom: 5px;
+  width: 100%; }
+
 .week-background {
   background-color: #f8f8f8; }
 

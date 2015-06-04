@@ -1,0 +1,32 @@
+<ion-view>
+  <ion-nav-title>
+    <img ng-src="../img/LogoHeader.png" class="logo">
+  </ion-nav-title>
+  <ion-content has-bouncing='false' class="staff-background">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="staff-section">Administration Staff</div>
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'admin'}" class="staff-container">
+        <ion-item class="staff-member">
+            {{staff_member.name}}
+            <i class="ion-ios-arrow-right info-arrow"></i>
+        </ion-item>
+    </ion-list>
+    <div class="staff-section">Teaching Staff</div>
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'teacher'}" class="staff-container">
+        <ion-item class="staff-member">
+            {{staff_member.name}}
+            <i class="ion-ios-arrow-right info-arrow"></i>
+        </ion-item>
+    </ion-list>
+    <div class="staff-section">Support Staff</div>
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'support'}" class="staff-container">
+        <ion-item class="staff-member">
+            {{staff_member.name}}
+            <i class="ion-ios-arrow-right info-arrow"></i>
+        </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

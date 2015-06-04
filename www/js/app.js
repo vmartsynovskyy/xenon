@@ -190,18 +190,6 @@ function dateStringToValue(timestring) {
     return (timeSplit[0] * 60 * 60 * 1000) + (timeSplit[1] * 60 * 1000);
 }
 
-// function sortByRotation(rotation, blocks) {
-//     var newBlocks = [];
-//     for (var i = 0; i < rotation.length; i++) {
-//         for (var v = 0; v < blocks.length; v++) {
-//             if (rotation[i] === blocks[v].rotation) {
-//                 newBlocks[i] = blocks[v];
-//             }
-//         }
-//     }
-//     return newBlocks;
-// }
-
 function compareBlockTimes(block1, block2) {
     var block1IsEvent = false;
     var block2IsEvent = false;
@@ -255,17 +243,95 @@ xenon.config(function($stateProvider) {
       }
     }
   });
+    
+  $stateProvider.state('contact', {
+    url: '/contact',
+    views: {
+      'contact': {
+        templateUrl: 'templates/contact.html',
+        controller: 'ContactCtrl'
+      },
+    }
+  });
 });
 
 xenon.factory('Day', function($resource, $cacheFactory) {
   var days_cache = $cacheFactory('days');
   return $resource('http://107.170.252.240/days/', {}, {
-    getDay: {cache: days_cache, method: 'GET', url:'http://107.170.252.240/days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
+    getDay: {cache: days_cache, isArray: true, method: 'GET', url:'http://107.170.252.240/days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
   });
 });
 
+xenon.factory('Staff', function($resource, $cacheFactory) {
+  var staff_cache = $cacheFactory('staff');
+  return $resource('http://107.170.252.240/staff/', {}, {
+    getStaff: {cache: staff_cache, isArray: true, method: 'GET', url:'http://107.170.252.240/staff/'},
+  });
+});
+
+xenon.controller('ContactCtrl', ['$scope', '$location', '$cacheFactory', 'Staff', '$ionicPopup',
+    function($scope, $location, $cacheFactory, Staff, $ionicPopup) {
+        function getStaffFromWeb() {
+            Staff.getStaff(function(result) {
+                if (result.length > 0) {
+                    $scope.staff = result;
+                }
+            },
+            function(error){
+                // TODO: DO SOMETHING ON ERROR
+            });
+        }
+        getStaffFromWeb();
+        $scope.doRefresh = function() {
+            if (navigator.connection.type === 'none') {
+                $ionicPopup.show({
+                  title: 'No Internet Connection',
+                  subTitle: 'Refresh again when you have an internet connection to get latest information',
+                  scope: $scope,
+                  buttons: [
+                  { text: 'Ok'},
+                ]});
+            } else {
+                try {
+                    $cacheFactory.get('staff').removeAll();
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            getStaffFromWeb();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+}]);
+
 xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$ionicPopup',
     function ($scope, $location, $cacheFactory, Day, $ionicPopup) {
+      function setDayFromWeb() {
+        Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()}, 
+        function (result) {
+            // changes $scope.day once data is retrieved from web API
+            if (result.length > 0) {
+                $scope.day.name = result[0].name;
+                $scope.day.day_type = result[0].day_type;  
+                $scope.day.announcement = result[0].announcement;
+                if (result[0].day_blocks.length > 0) {
+                    $scope.day.blocks = result[0].day_blocks.concat(result[0].day_events);
+                } else if (result[0].day_events.length > 0) {
+                    $scope.day.generateBlocks();
+                    $scope.day.blocks.concat(result[0].day_events);
+                } else {
+                    $scope.day.generateBlocks();
+                }
+                if (result[0].school_start_time && result[0].school_end_time) {
+                    $scope.day.school_start_time = result[0].school_start_time;
+                    $scope.day.school_end_time = result[0].school_end_time;
+                }
+            } else if ($scope.day.getDay() !== 6 || $scope.day.getDay() !== 0) {
+                $scope.day.generateBlocks();
+            }
+            $scope.day.blocks.sort(compareBlockTimes);
+        });
+      }
+
       function renderDayFromDate(date_arg){
         // sets all $scope variables for day.html template based on date_arg
         date_arg.setHours(0, 0, 0, 0);
@@ -275,30 +341,7 @@ xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$io
         if ($scope.day.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
           $scope.day.today = true;
         }
-        Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()}, 
-        function (result) {
-            // changes $scope.day once data is retrieved from web API
-            if (result.count > 0) {
-                $scope.day.name = result.results[0].name;
-                $scope.day.day_type = result.results[0].day_type;  
-                $scope.day.announcement = result.results[0].announcement;
-                if (result.results[0].day_blocks.length > 0) {
-                    $scope.day.blocks = result.results[0].day_blocks.concat(result.results[0].day_events);
-                } else if (result.results[0].day_events.length > 0) {
-                    $scope.day.generateBlocks();
-                    $scope.day.blocks.concat(result.results[0].day_events);
-                } else {
-                    $scope.day.generateBlocks();
-                }
-                if (result.results[0].school_start_time && result.results[0].school_end_time) {
-                    $scope.day.school_start_time = result.results[0].school_start_time;
-                    $scope.day.school_end_time = result.results[0].school_end_time;
-                }
-            } else if ($scope.day.getDay() !== 6 || $scope.day.getDay() !== 0) {
-                $scope.day.generateBlocks();
-            }
-            $scope.day.blocks.sort(compareBlockTimes);
-        });
+        setDayFromWeb()
     }
 
     if (!$location.search().date) {
@@ -317,7 +360,11 @@ xenon.controller('DayCtrl', ['$scope', '$location', '$cacheFactory', 'Day', '$io
               { text: 'Ok'},
             ]});
         } else {
-            $cacheFactory.get('days').removeAll();
+            try {
+                $cacheFactory.get('days').destroy();
+            } catch (e) {
+                console.log(e);
+            }
         }
         $scope.$apply();
         $scope.$broadcast('scroll.refreshComplete');
@@ -344,15 +391,15 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$io
                 }
 
                 Day.getDay({date: date.getDate(), month: date.getMonth() + 1, year: date.getFullYear()}, function (result) {
-                    if (result.count > 0) {
+                    if (result.length > 0) {
                         for (var iter = 0; iter < 7; iter++) {
                             // changes $scope.days when data is retrieved from web API
-                            if(new Date(result.results[0].date + ' PDT').getDate() === $scope.days[iter].getDate()) {
-                                $scope.days[iter].name = result.results[0].name;
-                                $scope.days[iter].day_type = result.results[0].day_type;
-                                $scope.days[iter].announcement = result.results[0].announcement;
-                                if (result.results[0].school_start_time && result.results[0].school_end_time) {
-                                    $scope.days[iter].diplaySchoolTime = twentyFourHourToAmPm(result.results[0].school_start_time) + ' - ' + twentyFourHourToAmPm(result.results[0].school_end_time);
+                            if(new Date(result[0].date + ' PDT').getDate() === $scope.days[iter].getDate()) {
+                                $scope.days[iter].name = result[0].name;
+                                $scope.days[iter].day_type = result[0].day_type;
+                                $scope.days[iter].announcement = result[0].announcement;
+                                if (result[0].school_start_time && result[0].school_end_time) {
+                                    $scope.days[iter].diplaySchoolTime = twentyFourHourToAmPm(result[0].school_start_time) + ' - ' + twentyFourHourToAmPm(result[0].school_end_time);
                                 }
                             }
                         }
@@ -374,7 +421,11 @@ xenon.controller('WeekCtrl',['$scope', '$location', '$cacheFactory', 'Day', '$io
                     { text: 'Ok'},
                 ]});
             } else {
-                $cacheFactory.get('days').removeAll();
+                try {
+                    $cacheFactory.get('days').destroy();
+                } catch (e) {
+                    console.log(e);
+                }
             }
             $scope.$apply();
             $scope.$broadcast('scroll.refreshComplete');
