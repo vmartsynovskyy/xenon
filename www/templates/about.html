@@ -1,0 +1,26 @@
+<ion-view>
+  <ion-nav-title>
+    <img ng-src="./img/LogoHeader.png" class="logo">
+  </ion-nav-title>
+  <ion-content class="staff-background">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    <div id="about-header">
+        The Unofficial App of Windsor Secondary
+    </div>
+    <h3 id="desc-header">
+        About
+    </h3>
+    <div id="app-description" ng-bind-html="about.about">
+        {{about.about}}
+    </div>
+    <h3 id="contact-header">
+        Contact
+    </h3>
+    <ion-item class="support-email">
+        <a target="_blank" href="mailto:{{about.support_email}}">{{about.support_email}}</a> <span class="staff-title">Support Email</span>
+    </ion-item>
+  </ion-content>
+</ion-view>

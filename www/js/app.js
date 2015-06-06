@@ -45,7 +45,7 @@ Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
 
 Date.prototype.getRotation = function() {
   if(this.getDay() !== 6 && this.getDay() !== 0) {
-    // Before deploying add more than one year's worth of start dates!
+    // TODO: fetch school year start and end from the interwebs
     switch (this.getNumberOfWeekdaysSince(new Date(2014, 8, 1)) % 10) {
         case 0:
             return [1, 2, 3, 4];
@@ -291,8 +291,56 @@ xenon.factory('Staff', function($resource, CacheFactory) {
     });
 });
 
-xenon.controller('ContactCtrl', ['$scope', '$location', 'CacheFactory', 'Staff', '$ionicPopup',
-    function($scope, $location, CacheFactory, Staff, $ionicPopup) {
+xenon.factory('About', function($resource, CacheFactory) {
+    CacheFactory('about');
+    return $resource('http://107.170.252.240/about/', {}, {
+        getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url:'http://107.170.252.240/about/'},
+    });
+});
+
+xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
+    function($scope, $ionicPopup, About, CacheFactory) {
+        function setAboutFromWeb() {
+            About.getAbout(function(result) {
+                $scope.about = result[0];
+                console.log($scope.about);
+            },
+            function(error) {
+                $ionicPopup.show({
+                  title: 'Error',
+                  subTitle: 'An error occurred while getting information from our servers WS Companion servers.',
+                  scope: $scope,
+                  buttons: [
+                  {text: 'Ok'},
+                ]});
+            });
+        }
+        
+        setAboutFromWeb();
+        
+        $scope.doRefresh = function() {
+            if (navigator.connection.type === 'none') {
+                $ionicPopup.show({
+                  title: 'No Internet Connection',
+                  subTitle: 'Refresh again when you have an internet connection to get latest information',
+                  scope: $scope,
+                  buttons: [
+                  {text: 'Ok'},
+                ]});
+            } else {
+                try {
+                    CacheFactory.get('about').removeAll();
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            setAboutFromWeb();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+}]);
+
+xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup',
+    function($scope, CacheFactory, Staff, $ionicPopup) {
         function setStaffFromWeb() {
             Staff.getStaff(function(result) {
                 if (result.length > 0) {
@@ -300,7 +348,13 @@ xenon.controller('ContactCtrl', ['$scope', '$location', 'CacheFactory', 'Staff',
                 }
             },
             function(error){
-                // TODO: DO SOMETHING ON ERROR
+                $ionicPopup.show({
+                  title: 'Error',
+                  subTitle: 'An error occurred while getting information from our servers WS Companion servers.',
+                  scope: $scope,
+                  buttons: [
+                  {text: 'Ok'},
+                ]});
             });
         }
         setStaffFromWeb();
@@ -509,7 +563,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ion
         }
 }]);
 
-
+var appVersion = '0.0.0';
 xenon.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -520,5 +574,8 @@ xenon.run(function($ionicPlatform) {
         if(window.StatusBar) {
             StatusBar.styleDefault();
         }
+        cordova.getAppVersion(function(version) {
+                appVersion = version;
+        });
     });
 });

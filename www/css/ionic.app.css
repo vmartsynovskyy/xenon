@@ -7693,6 +7693,39 @@ a.button {
   font-weight: normal;
   font-style: normal; }
 
+#about-header {
+  text-align: center;
+  font: 250% 'Roboto-Thin', sans-serif;
+  margin-bottom: 20px; }
+
+#desc-header {
+  font-family: 'Roboto-Light', sans-serif; }
+
+#contact-header {
+  font-family: 'Roboto-Light', sans-serif; }
+
+#app-description {
+  border-top: 1px solid #f8f8f8;
+  border-bottom: 1px solid #f8f8f8;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  background: #fff; }
+
+#app-description p {
+  font: 105% 'Roboto-Light', sans-serif;
+  margin-left: 10px;
+  margin-right: 10px; }
+
+.support-email {
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  margin-bottom: 5px;
+  width: 100%; }
+
+.support-email a {
+  color: #37bc61;
+  display: block; }
+
 .curr-week-button {
   text-align: center;
   width: 100%; }
