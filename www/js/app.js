@@ -73,6 +73,7 @@ Date.prototype.getRotation = function() {
 
 Date.prototype.getStartOfWeek = function() {
     var i = this;
+    i.setHours(0, 0, 0, 0);
     while(true) {
         if (i.getDay() === 0) {
            return i;
@@ -221,9 +222,9 @@ function compareBlockTimes(block1, block2) {
     }    
 }
 
-var xenon = angular.module('xenon', ['ionic', 'ngResource', 'angular-cache']);
+var xenon = angular.module('xenon', ['ionic', 'ngResource', 'angular-cache', 'ngAnimate']);
 
-xenon.config(function($stateProvider, CacheFactoryProvider) {
+xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider) {
     angular.extend(CacheFactoryProvider.defaults, {storageMode: 'localStorage'});
     $stateProvider.state('week', {
         url: '/week?date',
@@ -251,6 +252,26 @@ xenon.config(function($stateProvider, CacheFactoryProvider) {
             'contact': {
                 templateUrl: 'templates/contact.html',
                 controller: 'ContactCtrl'
+            },
+        }
+    });
+    
+    $stateProvider.state('discover', {
+        url: '/discover',
+        views: {
+            'discover': {
+                templateUrl: 'templates/discover.html',
+                controller: 'DiscoverCtrl'
+            },
+        }
+    });
+    
+    $stateProvider.state('about', {
+        url: '/about',
+        views: {
+            'about': {
+                templateUrl: 'templates/about.html',
+                controller: 'AboutCtrl'
             },
         }
     });
@@ -372,8 +393,8 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', '$ion
     }
 }]);
 
-xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup',
-    function ($scope, $location, CacheFactory, Day, $ionicPopup) {
+xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup', '$ionicViewSwitcher',
+    function ($scope, $location, CacheFactory, Day, $ionicPopup, $ionicViewSwitcher) {
         function renderWeekFromDate(date_arg) {
             // sets all $scope variables for week.html template based on date_arg
             $scope.days = [];
@@ -444,6 +465,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ion
             }
             var dateToRender = new Date(parseInt($location.search().date)).getStartOfWeek();
             dateToRender.setDate(dateToRender.getDate() + 7);
+            $ionicViewSwitcher.nextDirection('forward');
             $location.search('date', dateToRender.valueOf());
         };
 
@@ -453,8 +475,30 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ion
             }
             var dateToRender = new Date(parseInt($location.search().date)).getStartOfWeek();
             dateToRender.setDate(dateToRender.getDate() - 7);
+            $ionicViewSwitcher.nextDirection('back');
             $location.search('date', dateToRender.valueOf());
         };
+        
+        $scope.isThisWeek = function() {
+            if (!$location.search().date) {
+                return true;
+            }
+            return $location.search().date == new Date(Date.now()).getStartOfWeek().valueOf();
+        }
+        
+        $scope.switchToThisWeek = function() {
+            if ($location.search().date) {
+                if ($location.search().date != new Date(Date.now()).getStartOfWeek().valueOf()) {
+                    if ($location.search().date > Date.now()) {
+                        $ionicViewSwitcher.nextDirection('back');
+                    } else {
+                        $ionicViewSwitcher.nextDirection('forward');
+                    }
+                    $scope.weekStart = new Date(Date.now()).getStartOfWeek();
+                    $location.search('date', $scope.weekStart.valueOf());
+                }
+            }
+        }
 
         if (!$location.search().date) {
             $scope.weekStart = new Date(Date.now()).getStartOfWeek();

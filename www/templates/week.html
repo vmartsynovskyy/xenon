@@ -7,6 +7,9 @@
     pulling-text="Pull to refresh..."
     on-refresh="doRefresh()">
     </ion-refresher>
+    <button ng-if="!isThisWeek()" ng-click="switchToThisWeek()" class="curr-week-button button button-light">
+        Navigate To Current Week
+    </button>
     <a class="week-day" ng-repeat="day in days" ng-class="{'today': day.today}" ui-sref="day({date: day.valueOf()})">
         <div class="date">
             <span class="display-day">{{day.getShortDay()}}</span>

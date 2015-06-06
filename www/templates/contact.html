@@ -8,23 +8,35 @@
     on-refresh="doRefresh()">
     </ion-refresher>
     <div class="staff-section">Administration Staff</div>
-    <ion-list ng-repeat="staff_member in staff | filter: {type: 'admin'}" class="staff-container">
-        <ion-item class="staff-member">
-            {{staff_member.name}}
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'admin'} | orderBy: 'name.split(\' \')[2]'" class="staff-container">
+        <ion-item ng-click="show_staff = !show_staff" class="staff-member">
+            {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
+            <span ng-if="show_staff" class="staff-info">
+                <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
+                <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
+            </span>
             <i class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>
     <div class="staff-section">Teaching Staff</div>
-    <ion-list ng-repeat="staff_member in staff | filter: {type: 'teacher'}" class="staff-container">
-        <ion-item class="staff-member">
-            {{staff_member.name}}
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'teacher'} | orderBy: 'name.split(\' \')[2]'"" class="staff-container">
+        <ion-item ng-click="show_staff = !show_staff" class="staff-member">
+            {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
+            <span ng-if="show_staff" class="staff-info">
+                <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
+                <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
+            </span>
             <i class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>
     <div class="staff-section">Support Staff</div>
-    <ion-list ng-repeat="staff_member in staff | filter: {type: 'support'}" class="staff-container">
-        <ion-item class="staff-member">
-            {{staff_member.name}}
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'support'} | orderBy: 'name.split(\' \')[2]'"" class="staff-container">
+        <ion-item ng-click="show_staff = !show_staff" class="staff-member">
+            {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
+            <span ng-if="show_staff" class="staff-info">
+                <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
+                <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
+            </span>
             <i class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>

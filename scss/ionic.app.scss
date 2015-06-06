@@ -51,6 +51,36 @@ $bold_font: 'Roboto-Bold', sans-serif;
     font-style: normal;
 }
 
+.curr-week-button {
+    text-align: center;
+    width: 100%;
+}
+
+.staff-info {
+    margin-top: 8px;
+}
+
+.staff-member > i {
+    -webkit-transition:0.1s ease-in-out;
+    transition:0.1s ease-in-out;
+    transform: rotate(0deg);
+}
+
+.staff-info + .info-arrow {
+    -webkit-transition:0.1s ease-in-out;
+    transition:0.1s ease-in-out;
+    transform: rotate(90deg);
+}
+
+.staff-info a {
+    color: $positive;
+    display: block;
+}
+
+.staff-title {
+    font: 100% $bold_font;
+}
+
 .staff-section {
     font: 250% $thin_font;
     width: 100%;
@@ -62,6 +92,9 @@ $bold_font: 'Roboto-Bold', sans-serif;
 }
 
 .info-arrow {
+    position: absolute;
+    top: 32%;
+    right: 10px;
     float: right;
 }
 
