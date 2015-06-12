@@ -7699,10 +7699,12 @@ a.button {
   margin-bottom: 20px; }
 
 #desc-header {
-  font-family: 'Roboto-Light', sans-serif; }
+  font-family: 'Roboto-Light', sans-serif;
+  margin-left: 10px; }
 
 #contact-header {
-  font-family: 'Roboto-Light', sans-serif; }
+  font-family: 'Roboto-Light', sans-serif;
+  margin-left: 10px; }
 
 #app-description {
   border-top: 1px solid #f8f8f8;
