@@ -1,0 +1,35 @@
+<ion-view>
+  <ion-nav-title>
+    <img ng-src="./img/LogoHeader.png" class="logo">
+  </ion-nav-title>
+  <ion-content has-bouncing='false' class="staff-background">
+    <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="staff-section">Academic</div>
+    <ion-list ng-repeat="entry in discover | filter: {type: 'academic'}" class="staff-container">
+        <ion-item class="staff-member">
+            <a target="_blank" class="discover-website" href="{{entry.website}}">{{entry.name}}</a>
+        </ion-item>
+    </ion-list>
+    <div class="staff-section">Athletic</div>
+    <ion-list ng-repeat="entry in discover | filter: {type: 'athletic'}" class="staff-container">
+        <ion-item class="staff-member">
+            <a target="_blank" class="discover-website" href="{{entry.website}}">{{entry.name}}</a>
+        </ion-item>
+    </ion-list>
+    <div class="staff-section">Art</div>
+    <ion-list ng-repeat="entry in discover | filter: {type: 'art'}" class="staff-container">
+        <ion-item class="staff-member">
+            <a target="_blank" class="discover-website" href="{{entry.website}}">{{entry.name}}</a>
+        </ion-item>
+    </ion-list>
+    <div class="staff-section">Other</div>
+    <ion-list ng-repeat="entry in discover | filter: {type: 'other'}" class="staff-container">
+        <ion-item class="staff-member">
+            <a target="_blank" class="discover-website" href="{{entry.website}}">{{entry.name}}</a>
+        </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

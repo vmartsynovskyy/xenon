@@ -9,6 +9,11 @@ Date.prototype.display_school_time = null;
 Date.prototype.events = [];
 Date.prototype.blocks = [];
 
+var DEFAULT_ABOUT = {
+    about: "<p>\r\nWS Companion gives Windsor Secondary students the ability to find out about events happening at their school, check what classes they have next, find teacher contact information, sign into school WiFi without having to type in the credentials every time, and find websites and blogs maintained by Windsor Secondary staff.\r\n</p>\r\n\r\n<p>\r\nLead Developer: Vadym Martsynovskyy\r\n</p>\r\n<p>\r\nIdea and Original App: Chris Bolton\r\n</p>\r\n<p>\r\nData Entry: Lukas Kocsis\r\n</p>\r\n\r\n<p>\r\nWS Companion is an unofficial app created by Windsor Secondary students that is not maintained by the North Vancouver School District or Windsor Secondary.\r\n</p>",
+    support_email: 'vadym1@shaw.ca'
+}
+
 Date.prototype.getShortDay = function() {
     var days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return days[this.getDay()];
@@ -275,16 +280,6 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             },
         }
     });
-
-    $stateProvider.state('wifi', {
-        url: '/wifi',
-        views: {
-            'wifi': {
-                templateUrl: 'templates/wifi.html',
-                controller: 'WiFiCtrl'
-            },
-        }
-    });
 });
 
 xenon.factory('Day', function($resource, CacheFactory) {
@@ -301,12 +296,59 @@ xenon.factory('Staff', function($resource, CacheFactory) {
     });
 });
 
+xenon.factory('Discover', function($resource, CacheFactory) {
+    CacheFactory('discover');
+    return $resource('http://107.170.252.240/discover/', {}, {
+        getDiscover: {cache: CacheFactory.get('discover'), isArray: true, method: 'GET', url:'http://107.170.252.240/discover/'},
+    });
+});
+
 xenon.factory('About', function($resource, CacheFactory) {
     CacheFactory('about');
     return $resource('http://107.170.252.240/about/', {}, {
         getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url:'http://107.170.252.240/about/'},
     });
 });
+
+xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicPopup',
+    function($scope, CacheFactory, Discover, $ionicPopup) {
+        function setDiscoverFromWeb() {
+            Discover.getDiscover(function(result) {
+                if (result.length > 0) {
+                    $scope.discover = result;
+                }
+            },
+            function(error){
+                $ionicPopup.show({
+                  title: 'Error',
+                  subTitle: 'An error occurred while getting information from WS Companion servers.',
+                  scope: $scope,
+                  buttons: [
+                  {text: 'Ok'},
+                ]});
+            });
+        }
+        setDiscoverFromWeb();
+        $scope.doRefresh = function() {
+            if (navigator.connection.type === 'none') {
+                $ionicPopup.show({
+                  title: 'No Internet Connection',
+                  subTitle: 'Refresh again when you have an internet connection to get latest information',
+                  scope: $scope,
+                  buttons: [
+                  {text: 'Ok'},
+                ]});
+            } else {
+                try {
+                    CacheFactory.get('discover').removeAll();
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            setDiscoverFromWeb();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+}]);
 
 xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
     function($scope, $ionicPopup, About, CacheFactory) {
@@ -318,14 +360,14 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
             function(error) {
                 $ionicPopup.show({
                   title: 'Error',
-                  subTitle: 'An error occurred while getting information from our servers WS Companion servers.',
+                  subTitle: 'An error occurred while getting information from WS Companion servers.',
                   scope: $scope,
                   buttons: [
                   {text: 'Ok'},
                 ]});
             });
         }
-        
+        $scope.about = DEFAULT_ABOUT;
         setAboutFromWeb();
         
         $scope.doRefresh = function() {
@@ -360,7 +402,7 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
             function(error){
                 $ionicPopup.show({
                   title: 'Error',
-                  subTitle: 'An error occurred while getting information from our servers WS Companion servers.',
+                  subTitle: 'An error occurred while getting information from WS Companion servers.',
                   scope: $scope,
                   buttons: [
                   {text: 'Ok'},

@@ -81,6 +81,11 @@ $bold_font: 'Roboto-Bold', sans-serif;
     margin-right: 10px;
 }
 
+.discover-website {
+    color: $positive;
+    display: block;
+}
+
 .support-email {
     transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
