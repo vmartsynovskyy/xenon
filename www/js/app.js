@@ -308,53 +308,6 @@ xenon.factory('About', function($resource, CacheFactory) {
     });
 });
 
-xenon.controller('WiFiCtrl', ['$scope', '$ionicPopup', '$http',
-    function($scope, $ionicPopup, $http) {
-        $scope.signIn = function() {
-            var data = {
-                            username: 'guest09',
-                            password: '9033700',
-                            redirect_url: '',
-                            buttonClicked: '4',
-                            err_flag: '0',
-                            info_flag: '0',
-                            info_msg: '0',
-                        };
-            var config = {
-                            headers: 
-                            {
-                                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'Pragma': 'no-cache'
-                            }};
-            $http.post('http://2.2.2.2:80/login.html', data, config).
-                success(function(data, status, headers, config) {
-                    console.log(data);
-                    $ionicPopup.show({
-                      title: 'Success!',
-                      subTitle: 'Signed into WiFi!',
-                      scope: $scope,
-                      buttons: [
-                      {text: 'Ok'},
-                    ]});
-                }).
-                error(function(data, status, headers, config) {
-                    console.log(data);
-                    console.log(navigator.connection.type);
-                    console.log(status);
-                    console.log(headers);
-                    console.log(config);
-                    $ionicPopup.show({
-                      title: 'Error',
-                      subTitle: 'Not signed into WiFi!',
-                      scope: $scope,
-                      buttons: [
-                      {text: 'Ok'},
-                    ]});
-                });
-        }
-}]);
-
 xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
     function($scope, $ionicPopup, About, CacheFactory) {
         function setAboutFromWeb() {
