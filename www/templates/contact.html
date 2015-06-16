@@ -12,10 +12,12 @@
         <ion-item ng-click="show_staff = !show_staff" class="staff-member">
             {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
             <span ng-if="show_staff" class="staff-info">
+                <br>
                 <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
+                <br>
                 <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
             </span>
-            <i class="ion-ios-arrow-right info-arrow"></i>
+            <i ng-if="staff_member.website || staff_member.email" class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>
     <div class="staff-section">Teaching Staff</div>
@@ -23,10 +25,12 @@
         <ion-item ng-click="show_staff = !show_staff" class="staff-member">
             {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
             <span ng-if="show_staff" class="staff-info">
+                <br>
                 <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
+                <br>
                 <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
             </span>
-            <i class="ion-ios-arrow-right info-arrow"></i>
+            <i ng-if="staff_member.website || staff_member.email" class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>
     <div class="staff-section">Support Staff</div>
@@ -37,7 +41,7 @@
                 <a target="_blank" href="mailto:{{staff_member.email}}">{{staff_member.email}}</a>
                 <a target="_blank" ng-if="staff_member.website" href="{{staff_member.website}}">Website</a>
             </span>
-            <i class="ion-ios-arrow-right info-arrow"></i>
+            <i ng-if="staff_member.website || staff_member.email" class="ion-ios-arrow-right info-arrow"></i>
         </ion-item>
     </ion-list>
   </ion-content>

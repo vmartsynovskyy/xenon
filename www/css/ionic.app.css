@@ -7750,8 +7750,7 @@ a.button {
   transform: rotate(90deg); }
 
 .staff-info a {
-  color: #37bc61;
-  display: block; }
+  color: #37bc61; }
 
 .staff-title {
   font: 100% 'Roboto-Bold', sans-serif; }

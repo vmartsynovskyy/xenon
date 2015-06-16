@@ -368,6 +368,7 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
             });
         }
         $scope.about = DEFAULT_ABOUT;
+        $scope.version = appVersion;
         setAboutFromWeb();
         
         $scope.doRefresh = function() {
