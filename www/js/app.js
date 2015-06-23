@@ -14,6 +14,15 @@ var DEFAULT_ABOUT = {
     support_email: 'vadym1@shaw.ca'
 }
 
+var DEFAULT_YEARSTARTS = [
+    {
+        "date": "2014-09-01"
+    },
+    {
+        "date": "2015-08-31"
+    }
+];
+
 Date.prototype.getShortDay = function() {
     var days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return days[this.getDay()];
@@ -49,31 +58,40 @@ Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
 };
 
 Date.prototype.getRotation = function() {
-  if(this.getDay() !== 6 && this.getDay() !== 0) {
-    // TODO: fetch school year start and end from the interwebs
-    switch (this.getNumberOfWeekdaysSince(new Date(2014, 8, 1)) % 10) {
-        case 0:
-            return [1, 2, 3, 4];
-        case 1:
-            return [5, 6, 7, 8];
-        case 2:
-            return [2, 3, 1, 4];
-        case 3:
-            return [6, 7, 5, 8];
-        case 4:
-            return [3, 1, 2, 4];
-        case 5:
-            return [7, 5, 6, 8];
-        case 6:
-            return [1, 2, 3, 4];
-        case 7:
-            return [5, 6, 7, 8];
-        case 8:
-            return [2, 3, 1, 4];
-        case 9:
-            return [6, 7, 5, 8];
+    if(this.getDay() !== 6 && this.getDay() !== 0) {
+        if (!(window.localStorage['yearStartsFetched'])) {
+            window.localStorage['yearStarts'] = JSON.stringify(DEFAULT_YEARSTARTS);
+        }
+        var yearStarts = JSON.parse(window.localStorage['yearStarts']);
+        var closestYearStart;
+        for(var i = 0; i < yearStarts.length; i++) {
+            if (this.valueOf() > new Date(Date.parse(yearStarts[0].date.valueOf()))) {
+                closestYearStart = new Date(Date.parse(yearStarts[0].date.valueOf()));
+            }
+        }
+        switch (this.getNumberOfWeekdaysSince(closestYearStart) % 10) {
+            case 0:
+                return [1, 2, 3, 4];
+            case 1:
+                return [5, 6, 7, 8];
+            case 2:
+                return [2, 3, 1, 4];
+            case 3:
+                return [6, 7, 5, 8];
+            case 4:
+                return [3, 1, 2, 4];
+            case 5:
+                return [7, 5, 6, 8];
+            case 6:
+                return [1, 2, 3, 4];
+            case 7:
+                return [5, 6, 7, 8];
+            case 8:
+                return [2, 3, 1, 4];
+            case 9:
+                return [6, 7, 5, 8];
+        }
     }
-  }
 };
 
 Date.prototype.getStartOfWeek = function() {
@@ -81,7 +99,7 @@ Date.prototype.getStartOfWeek = function() {
     i.setHours(0, 0, 0, 0);
     while(true) {
         if (i.getDay() === 0) {
-           return i;
+            return i;
         }
         i.setDate(i.getDate() - 1);
     }
@@ -174,6 +192,21 @@ Date.prototype.generateBlocks = function () {
     }
 };
 
+Date.prototype.isDuringVacation = function() {
+    var vacations = JSON.parse(window.localStorage['vacations']);
+    for(var i = 0; i < vacations.length; i++) {
+        vacations[i].start_date = new Date(Date.parse(vacations[i].start_date));
+        vacations[i].end_date = new Date(Date.parse(vacations[i].end_date));
+    }
+    
+    for(var i = 0; i < vacations.length; i++) {
+        if (this.valueOf() > vacations[i].start_date.valueOf() && this.valueOf() < vacations[i].end_date.valueOf()) {
+            return vacations[i];
+        }
+    }
+    return false;
+}
+
 function twentyFourHourToAmPm(timestring) {
     var timeSplit = timestring.split(':');
     timeSplit[0] = parseInt(timeSplit[0]);
@@ -189,7 +222,7 @@ function twentyFourHourToAmPm(timestring) {
     return amPmTime;
 }
 
-function dateStringToValue(timestring) {
+function timeStringToValue(timestring) {
     var timeSplit = timestring.split(':');
     timeSplit[0] = parseInt(timeSplit[0]);
     timeSplit[1] = parseInt(timeSplit[1]);
@@ -202,15 +235,15 @@ function compareBlockTimes(block1, block2) {
     var block1Start;
     var block2Start;
     if (block1.hasOwnProperty('start_time')) {
-        block1Start = dateStringToValue(block1.start_time);
+        block1Start = timeStringToValue(block1.start_time);
     } else {
-        block1Start = dateStringToValue(block1.time);
+        block1Start = timeStringToValue(block1.time);
         block1IsEvent = true;
     }
     if (block2.hasOwnProperty('start_time')) {
-        block2Start = dateStringToValue(block2.start_time);
+        block2Start = timeStringToValue(block2.start_time);
     } else {
-        block2Start = dateStringToValue(block2.time);
+        block2Start = timeStringToValue(block2.time);
         block2IsEvent = true;
     }
 
@@ -300,6 +333,18 @@ xenon.factory('Discover', function($resource, CacheFactory) {
     CacheFactory('discover');
     return $resource('http://107.170.252.240/discover/', {}, {
         getDiscover: {cache: CacheFactory.get('discover'), isArray: true, method: 'GET', url:'http://107.170.252.240/discover/'},
+    });
+});
+
+xenon.factory('Vacation', function($resource, CacheFactory) {
+    return $resource('http://107.170.252.240/vacation/', {}, {
+        getVacations: {cache: false, isArray: true, method: 'GET', url:'http://107.170.252.240/vacation/'},
+    });
+});
+
+xenon.factory('YearStart', function($resource, CacheFactory) {
+    return $resource('http://107.170.252.240/yearstarts/', {}, {
+        getYearStarts: {cache: false, isArray: true, method: 'GET', url:'http://107.170.252.240/yearstarts/'},
     });
 });
 
@@ -432,8 +477,8 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
         }
 }]);
 
-xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup',
-    function ($scope, $location, CacheFactory, Day, $ionicPopup) {
+xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vacation', 'YearStart', '$ionicPopup',
+    function ($scope, $location, CacheFactory, Day, Vacation, YearStart, $ionicPopup) {
       function setDayFromWeb() {
         Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()}, 
         function (result) {
@@ -458,6 +503,12 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', '$ion
                 $scope.day.generateBlocks();
             }
             $scope.day.blocks.sort(compareBlockTimes);
+        });
+        Vacation.getVacations(function(result) {
+            window.localStorage['vacations'] = JSON.stringify(result);
+        });
+        YearStart.getYearStarts(function(result) {
+            window.localStorage['yearStarts'] = JSON.stringify(result);
         });
       }
 
@@ -500,8 +551,8 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', '$ion
     }
 }]);
 
-xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ionicPopup', '$ionicViewSwitcher',
-    function ($scope, $location, CacheFactory, Day, $ionicPopup, $ionicViewSwitcher) {
+xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vacation', 'YearStart', '$ionicPopup', '$ionicViewSwitcher',
+    function ($scope, $location, CacheFactory, Day, Vacation, YearStart, $ionicPopup, $ionicViewSwitcher) {
         function renderWeekFromDate(date_arg) {
             // sets all $scope variables for week.html template based on date_arg
             $scope.days = [];
@@ -514,9 +565,15 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ion
                 if (date.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
                     date.today = true;
                 }
+                
+                var duringVacation = date.isDuringVacation();
 
-                if (rotation) {
+                if (rotation && !duringVacation) {
                     date.rotation = rotation[0] + ' ' + rotation[1] + ' ' + rotation[2] + ' ' + rotation[3];
+                }
+                
+                if (duringVacation) {
+                    date.name = duringVacation.name;
                 }
 
                 Day.getDay({date: date.getDate(), month: date.getMonth() + 1, year: date.getFullYear()}, function (result) {
@@ -533,6 +590,14 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', '$ion
                             }
                         }
                     }
+                });
+                
+                Vacation.getVacations(function(result) {
+                    window.localStorage['vacations'] = JSON.stringify(result);
+                });
+                
+                YearStart.getYearStarts(function(result) {
+                    window.localStorage['yearStarts'] = JSON.stringify(result);
                 });
 
                 $scope.days.push(date);
