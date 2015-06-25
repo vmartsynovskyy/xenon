@@ -145,6 +145,7 @@ Date.prototype.getPrettified = function() {
 Date.prototype.generateBlocks = function () {
     this.blocks = [];
     var rotation = this.getRotation();
+    var classes = JSON.parse(localStorage['blockClasses']);
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return false;
@@ -171,10 +172,15 @@ Date.prototype.generateBlocks = function () {
     }
 
     for (var i = 0; i < 4; i++) {
+        var displayClass = classes[rotation[i] - 1];
+        if (displayClass.length > 10) {
+            displayClass = displayClass.substring(0, 7) + '...';
+        }
         var block = {
             start_time: '',
             end_time: '',
             rotation: rotation[i],
+            class: displayClass,
         };
         block.start_time = blockStarts[i];
         block.end_time = blockEnds[i];
@@ -313,6 +319,16 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             },
         }
     });
+    
+    $stateProvider.state('settings', {
+        url: '/settings',
+        views: {
+            'settings': {
+                templateUrl: 'templates/settings.html',
+                controller: 'SettingsCtrl'
+            },
+        }
+    });
 });
 
 xenon.factory('Day', function($resource, CacheFactory) {
@@ -354,6 +370,18 @@ xenon.factory('About', function($resource, CacheFactory) {
         getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url:'http://107.170.252.240/about/'},
     });
 });
+
+xenon.controller('SettingsCtrl', ['$scope',
+    function($scope) {
+        if (window.localStorage['blockClasses']) {
+            $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
+        }
+        $scope.blockChanged = function() {
+            console.log($scope.blockClasses);
+            window.localStorage['blockClasses'] = JSON.stringify($scope.blockClasses);
+        }
+}]);
+
 
 xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicPopup',
     function($scope, CacheFactory, Discover, $ionicPopup) {
@@ -513,10 +541,8 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
       }
 
       function renderDayFromDate(date_arg){
-        // sets all $scope variables for day.html template based on date_arg
-        date_arg.setHours(0, 0, 0, 0);
         $scope.day = date_arg;
-        $scope.day.rotation = $scope.day.getRotation();
+        date_arg.setHours(0, 0, 0, 0);
         $scope.toAmPm = twentyFourHourToAmPm;
         if ($scope.day.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
           $scope.day.today = true;

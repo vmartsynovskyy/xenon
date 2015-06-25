@@ -1,5 +1,5 @@
 <ion-view title="{{day.getPrettified()}}">
-    <ion-content padding="true">
+    <ion-content class="week-background" padding="true">
         <ion-refresher
             pulling-text="Pull to refresh..."
             on-refresh="doRefresh()">
@@ -14,7 +14,7 @@
             <div class="blocks-container" ng-if="day.blocks">
                 <div class="block" ng-repeat="block in day.blocks">
                     <div ng-if="block.hasOwnProperty('start_time')">
-                        <div class="rotation">{{block.rotation}}</div>
+                        <div class="rotation">{{block.rotation}}<span ng-if="block.class"> - <span class="class-name">{{block.class}}</span></span></div>
                         <div class="time">{{toAmPm(block.start_time)}} - {{toAmPm(block.end_time)}}</div>
                     </div>
                     <div ng-if="block.hasOwnProperty('time')">

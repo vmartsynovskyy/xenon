@@ -29,6 +29,7 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 $light_font: 'Roboto-Light', sans-serif;
 $thin_font: 'Roboto-Thin', sans-serif;
 $bold_font: 'Roboto-Bold', sans-serif;
+$normal_font: 'Roboto-Medium', sans-serif;
 
 @font-face {
     font-family: 'Roboto-Light';
@@ -49,6 +50,29 @@ $bold_font: 'Roboto-Bold', sans-serif;
     src: url('../fonts/Roboto-Bold.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto-Medium';
+    src: url('../fonts/Roboto-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.class-name {
+    font-size: 60%;
+}
+
+.block-input {
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.settings-form {
+    margin-left: 2.5%;
+    width: 95%;
 }
 
 #about-header {

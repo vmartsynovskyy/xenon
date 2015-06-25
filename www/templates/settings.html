@@ -1,0 +1,25 @@
+<ion-view>
+  <ion-nav-title>
+    <img ng-src="./img/LogoHeader.png" class="logo">
+  </ion-nav-title>
+  <ion-content class="staff-background">
+    <form name="myForm" class="settings-form" ng-controller="SettingsCtrl as settingsCtrl">
+        <label for="block1Class"> Block 1 Class: </label>
+        <input type="text" class="block-input" id="block1Class" ng-model="blockClasses[0]" ng-change="blockChanged()" />
+        <label for="block2Class"> Block 2 Class: </label>
+        <input type="text" class="block-input" id="block2Class" ng-model="blockClasses[1]" ng-change="blockChanged()" />
+        <label for="block3Class"> Block 3 Class: </label>
+        <input type="text" class="block-input" id="block3Class" ng-model="blockClasses[2]" ng-change="blockChanged()" />
+        <label for="block4Class"> Block 4 Class: </label>
+        <input type="text" class="block-input" id="block4Class" ng-model="blockClasses[3]" ng-change="blockChanged()" />
+        <label for="block5Class"> Block 5 Class: </label>
+        <input type="text" class="block-input" id="block5Class" ng-model="blockClasses[4]" ng-change="blockChanged()" />
+        <label for="block6Class"> Block 6 Class: </label>
+        <input type="text" class="block-input" id="block6Class" ng-model="blockClasses[5]" ng-change="blockChanged()" />
+        <label for="block7Class"> Block 7 Class: </label>
+        <input type="text" class="block-input" id="block7Class" ng-model="blockClasses[6]" ng-change="blockChanged()" />
+        <label for="block8Class"> Block 8 Class: </label>
+        <input type="text" class="block-input"" id="block8Class" ng-model="blockClasses[7]" ng-change="blockChanged()" />
+    </form>
+  </ion-content>
+</ion-view>
