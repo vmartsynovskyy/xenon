@@ -145,7 +145,9 @@ Date.prototype.getPrettified = function() {
 Date.prototype.generateBlocks = function () {
     this.blocks = [];
     var rotation = this.getRotation();
-    var classes = JSON.parse(localStorage['blockClasses']);
+    if (localStorage['blockClasses']) {
+        var classes = JSON.parse(localStorage['blockClasses']);
+    }
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return false;
@@ -172,9 +174,13 @@ Date.prototype.generateBlocks = function () {
     }
 
     for (var i = 0; i < 4; i++) {
-        var displayClass = classes[rotation[i] - 1];
-        if (displayClass.length > 10) {
-            displayClass = displayClass.substring(0, 7) + '...';
+        if (localStorage['blockClasses']) {
+            var displayClass = classes[rotation[i] - 1];
+            if (displayClass.length > 10) {
+                displayClass = displayClass.substring(0, 7) + '...';
+            }
+        } else {
+            var displayClass;
         }
         var block = {
             start_time: '',
@@ -199,18 +205,20 @@ Date.prototype.generateBlocks = function () {
 };
 
 Date.prototype.isDuringVacation = function() {
-    var vacations = JSON.parse(window.localStorage['vacations']);
-    for(var i = 0; i < vacations.length; i++) {
-        vacations[i].start_date = new Date(Date.parse(vacations[i].start_date));
-        vacations[i].end_date = new Date(Date.parse(vacations[i].end_date));
-    }
-    
-    for(var i = 0; i < vacations.length; i++) {
-        if (this.valueOf() > vacations[i].start_date.valueOf() && this.valueOf() < vacations[i].end_date.valueOf()) {
-            return vacations[i];
+    if (window.localStorage['vacations']) {
+        var vacations = JSON.parse(window.localStorage['vacations']);
+        for(var i = 0; i < vacations.length; i++) {
+            vacations[i].start_date = new Date(Date.parse(vacations[i].start_date));
+            vacations[i].end_date = new Date(Date.parse(vacations[i].end_date));
         }
+        
+        for(var i = 0; i < vacations.length; i++) {
+            if (this.valueOf() > vacations[i].start_date.valueOf() && this.valueOf() < vacations[i].end_date.valueOf()) {
+                return vacations[i];
+            }
+        }
+        return false;
     }
-    return false;
 }
 
 function twentyFourHourToAmPm(timestring) {
@@ -386,15 +394,17 @@ xenon.controller('SettingsCtrl', ['$scope',
 xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicPopup',
     function($scope, CacheFactory, Discover, $ionicPopup) {
         function setDiscoverFromWeb() {
-            Discover.getDiscover(function(result) {
+            Discover.getDiscover(
+            function(result) {
                 if (result.length > 0) {
                     $scope.discover = result;
                 }
             },
-            function(error){
+            function(response) {
+                console.log(response);
                 $ionicPopup.show({
-                  title: 'Error',
-                  subTitle: 'An error occurred while getting information from WS Companion servers.',
+                  title: 'No Internet Connection',
+                  subTitle: 'Refresh again when you have an internet connection to get latest information',
                   scope: $scope,
                   buttons: [
                   {text: 'Ok'},
@@ -421,6 +431,9 @@ xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicP
             setDiscoverFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
         }
+        $scope.openLink = function(url) {
+            window.open(url, '_system');
+        }
 }]);
 
 xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
@@ -431,6 +444,7 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
                 console.log($scope.about);
             },
             function(error) {
+                console.log(error);
                 $ionicPopup.show({
                   title: 'Error',
                   subTitle: 'An error occurred while getting information from WS Companion servers.',
@@ -462,6 +476,10 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
             }
             setAboutFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
+        }
+
+        $scope.openLink = function(url) {
+            window.open(url, '_system');
         }
 }]);
 
@@ -502,6 +520,10 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
             }
             setStaffFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
+        }
+        
+        $scope.openLink = function(url) {
+            window.open(url, '_system');
         }
 }]);
 
@@ -584,6 +606,13 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             $scope.days = [];
             date_arg.setHours(0, 0, 0, 0);
             var next_date = date_arg;
+            Vacation.getVacations(function(result) {
+                window.localStorage['vacations'] = JSON.stringify(result);
+            });
+            
+            YearStart.getYearStarts(function(result) {
+                window.localStorage['yearStarts'] = JSON.stringify(result);
+            });
             for (var i = 0; i < 7; i++) {
                 var date = new Date(next_date);
                 var rotation = date.getRotation();
@@ -616,14 +645,6 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                             }
                         }
                     }
-                });
-                
-                Vacation.getVacations(function(result) {
-                    window.localStorage['vacations'] = JSON.stringify(result);
-                });
-                
-                YearStart.getYearStarts(function(result) {
-                    window.localStorage['yearStarts'] = JSON.stringify(result);
                 });
 
                 $scope.days.push(date);
