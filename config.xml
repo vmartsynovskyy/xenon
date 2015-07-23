@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<<<<<<< HEAD
 <widget id="com.ionicframework.xenon958521" version="3.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-=======
 <widget id="com.ionicframework.xenon958521" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
->>>>>>> 977c7700d74aedc4448149f60255d4371c0f4d07
   <name>WS Companion</name>
   <description>&#xD;&#xD;&#xD;&#xD;
         The unofficial Windsor Secondary Mobile App which supports the school schedules, contact information, and other useful resources for students.&#xD;&#xD;&#xD;&#xD;
