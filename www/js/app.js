@@ -10,7 +10,7 @@ Date.prototype.events = [];
 Date.prototype.blocks = [];
 
 var DEFAULT_ABOUT = {
-    about: "<p>\r\nWS Companion gives Windsor Secondary students the ability to find out about events happening at their school, check what classes they have next, find teacher contact information, sign into school WiFi without having to type in the credentials every time, and find websites and blogs maintained by Windsor Secondary staff.\r\n</p>\r\n\r\n<p>\r\nLead Developer: Vadym Martsynovskyy\r\n</p>\r\n<p>\r\nIdea and Original App: Chris Bolton\r\n</p>\r\n<p>\r\nData Entry: Lukas Kocsis\r\n</p>\r\n\r\n<p>\r\nWS Companion is an unofficial app created by Windsor Secondary students that is not maintained by the North Vancouver School District or Windsor Secondary.\r\n</p>",
+    about: "<p>\r\nWS Companion gives Windsor Secondary students the ability to find out about events happening at their school, check what classes they have next, find teacher contact information, and find websites and blogs maintained by Windsor Secondary staff.\r\n</p>\r\n\r\n<p>\r\nLead Developer: Vadym Martsynovskyy\r\n</p>\r\n<p>\r\nIdea and Original App: Chris Bolton\r\n</p>\r\n<p>\r\nData Entry: Lukas Kocsis\r\n</p>\r\n\r\n<p>\r\nWS Companion is an unofficial app created by Windsor Secondary students that is not maintained by the North Vancouver School District or Windsor Secondary.\r\n</p>",
     support_email: 'vadym1@shaw.ca'
 }
 
