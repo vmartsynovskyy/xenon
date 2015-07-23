@@ -7739,6 +7739,7 @@ a.button {
 
 .discover-website {
   color: #37bc61;
+  text-decoration: underline;
   display: block; }
 
 .support-email {
