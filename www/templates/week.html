@@ -19,7 +19,7 @@
         <div class="info">
             <span ng-if="day.day_type !== 'holiday'">
                 <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
-                <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30pm - 3:00pm</div>
+                <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30am - 3:00pm</div>
                 <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
             </span>
             <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>

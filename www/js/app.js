@@ -181,12 +181,16 @@ Date.prototype.generateBlocks = function () {
 
     for (var i = 0; i < 4; i++) {
         if (localStorage['blockClasses']) {
-            var displayClass = classes[rotation[i] - 1];
-            if (displayClass.length > 10) {
-                displayClass = displayClass.substring(0, 7) + '...';
+            if (classes[rotation[i] - 1]) {
+                var displayClass = classes[rotation[i] - 1];
+                if (displayClass.length > 10) {
+                    displayClass = displayClass.substring(0, 7) + '...';
+                }
+            } else {
+                var displayClass = '';
             }
         } else {
-            var displayClass;
+            var displayClass = '';
         }
         var block = {
             start_time: '',
