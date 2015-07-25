@@ -286,6 +286,32 @@ function compareBlockTimes(block1, block2) {
 
 var xenon = angular.module('xenon', ['ionic', 'ngResource', 'angular-cache', 'ngAnimate']);
 
+xenon.directive('input', function($timeout){
+     return {
+         restrict: 'E',
+         scope: {
+             'returnClose': '=',
+             'onReturn': '&'
+        },
+        link: function(scope, element, attr){
+            element.bind('keydown', function(e){
+                if(e.which == 13){
+                    if(scope.returnClose){
+                        console.log('return-close true: closing keyboard');
+                        element[0].blur();
+                    }
+                    if(scope.onReturn){
+                        console.log('on-return set: executing');
+                        $timeout(function(){
+                            scope.onReturn();
+                        });                        
+                    }
+                } 
+            });   
+        }
+    }
+});
+
 xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider) {
     angular.extend(CacheFactoryProvider.defaults, {storageMode: 'localStorage'});
     $stateProvider.state('week', {
@@ -394,9 +420,14 @@ xenon.controller('SettingsCtrl', ['$scope',
         if (window.localStorage['blockClasses']) {
             $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
         }
+
         $scope.blockChanged = function() {
             console.log($scope.blockClasses);
             window.localStorage['blockClasses'] = JSON.stringify($scope.blockClasses);
+        }
+
+        $scope.closeKeyboard = function() {
+            cordova.plugins.Keyboard.close();
         }
 }]);
 
