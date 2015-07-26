@@ -7700,6 +7700,7 @@ a.button {
   font-style: normal; }
 
 .class-name {
+  vertical-align: middle;
   font-size: 60%; }
 
 .block-input {
