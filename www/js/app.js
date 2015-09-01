@@ -156,16 +156,16 @@ Date.prototype.generateBlocks = function () {
     }
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
-        return false;
+        return null;
     } else if (this.day_type === 'pro-d') {
-        return false;
+        return null;
     } else if (this.day_type === 'early-d'){
         blockStarts =   ['08:30:00', '09:35:00', '11:10:00', '13:15:00'];
         blockEnds =     ['09:30:00', '10:35:00', '12:10:00', '13:15:00'];
         eventTimes =    ['09:30:00', '10:35:00', '12:10:00'];
         eventNames =    ['5 Minute Break', '35 Minute Lunch', '5 Minute Break'];
     } else if (this.day_type === 'holiday'){
-        return false;
+        return null;
     } else if (this.day_type === 'late-start'){
         blockStarts =   ['09:50:00', '11:05:00', '12:10:00', '14:00:00'];
         blockEnds =     ['10:50:00', '12:05:00', '13:10:00', '15:00:00'];
@@ -276,9 +276,9 @@ function compareBlockTimes(block1, block2) {
     } else if (block1Start > block2Start) {
         return 1;
     } else if (block1IsEvent === true && block2IsEvent === false) {
-        return 1;
-    } else if (block1IsEvent === false && block2IsEvent === true) {
         return -1;
+    } else if (block1IsEvent === false && block2IsEvent === true) {
+        return 1;
     } else {
         return 0;
     }    
@@ -582,7 +582,7 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                     $scope.day.blocks = result[0].day_blocks.concat(result[0].day_events);
                 } else if (result[0].day_events.length > 0) {
                     $scope.day.generateBlocks();
-                    $scope.day.blocks.concat(result[0].day_events);
+                    $scope.day.blocks = $scope.day.blocks.concat(result[0].day_events);
                 } else {
                     $scope.day.generateBlocks();
                 }
@@ -677,8 +677,12 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                         for (var iter = 0; iter < 7; iter++) {
                             // changes $scope.days when data is retrieved from web API
                             if(new Date(result[0].date + ' PDT').getDate() === $scope.days[iter].getDate()) {
-                                $scope.days[iter].name = result[0].name;
                                 $scope.days[iter].day_type = result[0].day_type;
+                                if ($scope.days[iter].day_type != 'normal') {
+                                    $scope.days[iter].name = result[0].name;
+                                } else {
+                                    $scope.days[iter].name = '';
+                                }
                                 $scope.days[iter].announcement = result[0].announcement;
                                 if (result[0].school_start_time && result[0].school_end_time) {
                                     $scope.days[iter].diplaySchoolTime = twentyFourHourToAmPm(result[0].school_start_time) + ' - ' + twentyFourHourToAmPm(result[0].school_end_time);
