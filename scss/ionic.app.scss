@@ -240,12 +240,14 @@ $normal_font: 'Roboto-Medium', sans-serif;
 }
 
 .block .name {
+    float: left;
     padding-left: 10px;
     font: 120% $bold_font;
     color: $darkgrey
 }
 
 .block .info {
+    float: left;
     padding-left: 10px;
     padding-right: 10px;
     overflow: hidden;
