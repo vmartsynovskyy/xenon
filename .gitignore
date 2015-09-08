@@ -16,7 +16,11 @@ www/scripts/
 www/Project_Readme.html
 www/config.xml
 www/taco.json
-www/www.jsproj
-www.sln
 /www/www.jsproj.user
 /www.v12.suo
+bin/
+bld/
+.vs/
+taco.json
+*.sln
+*.jsproj
