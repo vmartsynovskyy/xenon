@@ -1,4 +1,4 @@
-f'use strict';
+'use strict';
 Date.prototype.rotation = null;
 Date.prototype.day_type = null;
 Date.prototype.today = null;
@@ -22,10 +22,10 @@ var DEFAULT_ABOUT = {
 
 var DEFAULT_YEARSTARTS = [
     {
-        "date": "2014-09-01"
+        "date": "1999-05-21"
     },
     {
-        "date": "2015-08-31"
+        "date": "2015-09-07"
     }
 ];
 
@@ -69,10 +69,11 @@ Date.prototype.getRotation = function() {
             window.localStorage['yearStarts'] = JSON.stringify(DEFAULT_YEARSTARTS);
         }
         var yearStarts = JSON.parse(window.localStorage['yearStarts']);
-        var closestYearStart;
+        var closestYearStart = new Date(Date.parse(yearStarts[0].date.valueOf()));
         for(var i = 0; i < yearStarts.length; i++) {
-            if (this.valueOf() > new Date(Date.parse(yearStarts[0].date.valueOf()))) {
-                closestYearStart = new Date(Date.parse(yearStarts[0].date.valueOf()));
+            var thisYearStart = new Date(Date.parse(yearStarts[i].date.valueOf()));
+            if (this.valueOf() > thisYearStart.valueOf() && closestYearStart.valueOf() < thisYearStart.valueOf()) {
+                closestYearStart = thisYearStart;
             }
         }
         switch (this.getNumberOfWeekdaysSince(closestYearStart) % 10) {
@@ -599,6 +600,7 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             window.localStorage['vacations'] = JSON.stringify(result);
         });
         YearStart.getYearStarts(function(result) {
+            window.localStorage['yearStartsFetched'] = 'true';
             window.localStorage['yearStarts'] = JSON.stringify(result);
         });
       }
@@ -653,6 +655,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             
             YearStart.getYearStarts(function(result) {
                 window.localStorage['yearStarts'] = JSON.stringify(result);
+                window.localStorage['yearStartsFetched'] = 'true';
             });
             for (var i = 0; i < 7; i++) {
                 var date = new Date(next_date);
