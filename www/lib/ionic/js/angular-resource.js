@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.5
+ * @license AngularJS v1.4.7
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -22,7 +22,7 @@ function lookupDottedPath(obj, path) {
     throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
   }
   var keys = path.split('.');
-  for (var i = 0, ii = keys.length; i < ii && obj !== undefined; i++) {
+  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
     var key = keys[i];
     obj = (obj !== null) ? obj[key] : undefined;
   }
@@ -126,36 +126,36 @@ function shallowClearAndCopy(src, dst) {
  *
  *   Where:
  *
- *   - **`action`** â€“ {string} â€“ The name of action. This name becomes the name of the method on
+ *   - **`action`** – {string} – The name of action. This name becomes the name of the method on
  *     your resource object.
- *   - **`method`** â€“ {string} â€“ Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
+ *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
  *     `DELETE`, `JSONP`, etc).
- *   - **`params`** â€“ {Object=} â€“ Optional set of pre-bound parameters for this action. If any of
+ *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
  *     the parameter value is a function, it will be executed every time when a param value needs to
  *     be obtained for a request (unless the param was overridden).
- *   - **`url`** â€“ {string} â€“ action specific `url` override. The url templating is supported just
+ *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
  *     like for the resource-level urls.
- *   - **`isArray`** â€“ {boolean=} â€“ If true then the returned object for this action is an array,
+ *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
  *     see `returns` section.
- *   - **`transformRequest`** â€“
- *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` â€“
+ *   - **`transformRequest`** –
+ *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
  *     transform function or an array of such functions. The transform function takes the http
  *     request body and headers and returns its transformed (typically serialized) version.
  *     By default, transformRequest will contain one function that checks if the request data is
  *     an object and serializes to using `angular.toJson`. To prevent this behavior, set
  *     `transformRequest` to an empty array: `transformRequest: []`
- *   - **`transformResponse`** â€“
- *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` â€“
+ *   - **`transformResponse`** –
+ *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
  *     transform function or an array of such functions. The transform function takes the http
  *     response body and headers and returns its transformed (typically deserialized) version.
  *     By default, transformResponse will contain one function that checks if the response looks like
  *     a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior, set
  *     `transformResponse` to an empty array: `transformResponse: []`
- *   - **`cache`** â€“ `{boolean|Cache}` â€“ If true, a default $http cache will be used to cache the
+ *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
  *     GET request, otherwise if a cache instance built with
  *     {@link ng.$cacheFactory $cacheFactory}, this cache will be used for
  *     caching.
- *   - **`timeout`** â€“ `{number|Promise}` â€“ timeout in milliseconds, or {@link ng.$q promise} that
+ *   - **`timeout`** – `{number|Promise}` – timeout in milliseconds, or {@link ng.$q promise} that
  *     should abort the request when resolved.
  *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the
  *     XHR object. See
@@ -172,7 +172,7 @@ function shallowClearAndCopy(src, dst) {
  *
  *   Where:
  *
- *   - **`stripTrailingSlashes`** â€“ {boolean} â€“ If true then the trailing
+ *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing
  *   slashes from any calculated URL will be stripped. (Defaults to true.)
  *
  * @returns {Object} A resource "class" object with methods for the default set of resource actions
