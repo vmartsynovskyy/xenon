@@ -174,6 +174,7 @@ Date.prototype.generateBlocks = function () {
         eventNames =    ['15 Minute Break', '5 Minute Break', '50 Minute Lunch'];
     }
     else {
+        this.day_type = 'normal';
         blockStarts =   ['08:30:00', '10:05:00', '11:30:00', '13:40:00'];
         blockEnds =     ['09:50:00', '11:25:00', '12:50:00', '15:00:00'];
         eventTimes =    ['09:50:00', '11:25:00', '12:50:00'];
@@ -582,11 +583,9 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 if (result[0].day_blocks.length > 0) {
                     $scope.day.blocks = result[0].day_blocks.concat(result[0].day_events);
                 } else if (result[0].day_events.length > 0) {
-                    $scope.day.generateBlocks();
                     $scope.day.blocks = $scope.day.blocks.concat(result[0].day_events);
-                } else {
-                    $scope.day.generateBlocks();
                 }
+                $scope.day.generateBlocks();
                 if (result[0].school_start_time && result[0].school_end_time) {
                     $scope.day.school_start_time = result[0].school_start_time;
                     $scope.day.school_end_time = result[0].school_end_time;
@@ -605,14 +604,14 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
         });
       }
 
-      function renderDayFromDate(date_arg){
+    function renderDayFromDate(date_arg){
         $scope.day = date_arg;
         date_arg.setHours(0, 0, 0, 0);
         $scope.toAmPm = twentyFourHourToAmPm;
         if ($scope.day.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
           $scope.day.today = true;
         }
-        setDayFromWeb()
+        setDayFromWeb();
     }
 
     if (!$location.search().date) {
@@ -667,6 +666,8 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 
                 var duringVacation = date.isDuringVacation();
 
+                date.generateBlocks();
+
                 if (rotation && !duringVacation) {
                     date.rotation = rotation[0] + ' ' + rotation[1] + ' ' + rotation[2] + ' ' + rotation[3];
                 }
@@ -679,17 +680,22 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                     if (result.length > 0) {
                         for (var iter = 0; iter < 7; iter++) {
                             // changes $scope.days when data is retrieved from web API
-                            if(new Date(result[0].date).getDate() === $scope.days[iter].getDate()) {
+                            var offset = new Date().getTimezoneOffset() / 60;
+                            var utcDate = new Date(result[0].date);
+                            var convertedDate = new Date(utcDate.valueOf() + offset * 60000);
+                            if(new Date(result[0].date + 'T00:00-0' + offset + ':00').getDate() === $scope.days[iter].getDate()) {
                                 $scope.days[iter].day_type = result[0].day_type;
                                 if ($scope.days[iter].day_type != 'normal') {
                                     $scope.days[iter].name = result[0].name;
                                 } else {
                                     $scope.days[iter].name = '';
                                 }
+                                $scope.days[iter].generateBlocks();
                                 $scope.days[iter].announcement = result[0].announcement;
                                 if (result[0].school_start_time && result[0].school_end_time) {
                                     $scope.days[iter].diplaySchoolTime = twentyFourHourToAmPm(result[0].school_start_time) + ' - ' + twentyFourHourToAmPm(result[0].school_end_time);
                                 }
+                                break;
                             }
                         }
                     }

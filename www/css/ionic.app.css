@@ -7848,11 +7848,13 @@ a.button {
   color: #333; }
 
 .block .name {
+  float: left;
   padding-left: 10px;
   font: 120% 'Roboto-Bold', sans-serif;
   color: #333; }
 
 .block .info {
+  float: left;
   padding-left: 10px;
   padding-right: 10px;
   overflow: hidden;

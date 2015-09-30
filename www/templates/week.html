@@ -16,15 +16,32 @@
             <span class="num">{{day.getTwoDigitDate()}}</span>
             <span class="month">{{day.getShortMonth()}}</span>
         </div>
-        <div class="info">
-            <span ng-if="day.day_type !== 'holiday'">
+        <div class="info" ng-if="day.day_type == 'normal'">
+            <span>
                 <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
                 <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30am - 3:00pm</div>
                 <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
             </span>
             <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>
         </div>
-        <div class="big-name" ng-if="day.day_type === 'holiday'">{{day.name}}</div>
+        <div class="info" ng-if="day.day_type == 'early-d'">
+            <span>
+                <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
+                <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30am - 1:15pm</div>
+                <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
+            </span>
+            <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>
+        </div>
+        <div class="info" ng-if="day.day_type == 'late-start'">
+            <span>
+                <div class="time" ng-if="day.diplaySchoolTime">{{day.diplaySchoolTime}}</div>
+                <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">9:50am - 3:00pm</div>
+                <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
+            </span>
+            <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>
+        </div>
+        <div class="big-name" ng-if="day.day_type == 'holiday'">{{day.name}}</div>
+        <div class="big-name" ng-if="day.day_type == 'pro-d'">Pro D Day</div>
         <div class="announcement">
             {{day.announcement}}
         </div>
