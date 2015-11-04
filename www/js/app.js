@@ -680,10 +680,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                     if (result.length > 0) {
                         for (var iter = 0; iter < 7; iter++) {
                             // changes $scope.days when data is retrieved from web API
-                            var offset = new Date().getTimezoneOffset() / 60;
-                            var utcDate = new Date(result[0].date);
-                            var convertedDate = new Date(utcDate.valueOf() + offset * 60000);
-                            if(new Date(result[0].date + 'T00:00-0' + offset + ':00').getDate() === $scope.days[iter].getDate()) {
+                            if(new Date(result[0].date).getDate() === $scope.days[iter].getDate()) {
                                 $scope.days[iter].day_type = result[0].day_type;
                                 if ($scope.days[iter].day_type != 'normal') {
                                     $scope.days[iter].name = result[0].name;
