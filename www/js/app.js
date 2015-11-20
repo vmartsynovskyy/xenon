@@ -49,14 +49,24 @@ Date.prototype.getTwoDigitDate = function() {
 };
 
 Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
+    startDate.setHours(0, 0, 0, 0);
+    var millisecondsInDay = 1000 * 60 * 60 * 24;
+    var weekdayCounter = 0;
+    for (var d = startDate; d.getTime() !== this.getTime() || d < 100000; d.incrementDate(1)) {
+        // increment weekday counter if the day isn't a weekend(sat + sun)
+        if (d.getDay() !== 0 && d.getDay() !== 6) {
+            weekdayCounter++;
+        }
+    }
+    return weekdayCounter;
+};
+Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
   startDate.setHours(0, 0, 0, 0);
-  startDate = startDate.getTime();
   var millisecondsInDay = 1000 * 60 * 60 * 24;
   var weekdayCounter = 0;
-  for (var d = startDate; d !== this.getTime(); d += millisecondsInDay) {
+  for (var d = startDate; d.getTime() !== this.getTime() || d < 100000; d.incrementDate(1)) {
     // increment weekday counter if the day isn't a weekend(sat + sun)
-    var fullDate = new Date(d);
-    if (fullDate.getDay() !== 0 && fullDate.getDay() !== 6) {
+    if (d.getDay() !== 0 && d.getDay() !== 6) {
         weekdayCounter++;
     }
   }
@@ -231,6 +241,24 @@ Date.prototype.isDuringVacation = function() {
         }
         return false;
     }
+}
+
+Date.prototype.incrementDate = function(amount) {
+    var date = this;
+    var tzOff = date.getTimezoneOffset() * 60 * 1000,
+        t = date.getTime(),
+        tzOff2;
+
+    t += (1000 * 60 * 60 * 24) * amount;
+    this.setTime(t);
+
+    tzOff2 = this.getTimezoneOffset() * 60 * 1000;
+    if (tzOff != tzOff2) {
+        var diff = tzOff2 - tzOff;
+        t += diff;
+        this.setTime(t);
+    }
+    return this;
 }
 
 function twentyFourHourToAmPm(timestring) {
@@ -699,8 +727,8 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 });
 
                 $scope.days.push(date);
-                next_date.setDate(date.getDate() + 1);  
-            }   
+                next_date.incrementDate(1);
+            }
         }
 
         $scope.doRefresh = function() {
