@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://107.170.252.240/ file:///">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://107.170.252.240/ filesystem"> -->
     <allow-navigation href="http://107.170.252.240/*" />
     <title>WS Companion</title>
     
@@ -14,8 +14,12 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ionic/js/angular-resource.js"></script>
-    <script src="lib/ionic/js/angular-cache.js"></script>
+
+    <!-- angular-resource js -->
+    <script src="lib/angular-resource/angular-resource.js"></script>
+
+    <!-- angular-cache js -->
+    <script src="lib/angular-cache/dist/angular-cache.js"></script>
 
     <!-- ngCordova -->
     <script src="lib/ng-cordova.min.js"></script>
@@ -24,6 +28,7 @@
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
+    <script src="js/date.js"></script>
     <script src="js/app.js"></script>
   </head>
 
