@@ -20,7 +20,7 @@ var DEFAULT_YEARSTARTS = [
     }
 ];
 
-var xenon = angular.module('xenon', ['ionic', 'ngResource', 'angular-cache', 'ngAnimate']);
+var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
 
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     errTitle = typeof errTitle !== 'undefined' ? errTitle : "No Internet Connection";
@@ -499,6 +499,30 @@ xenon.run(function($ionicPlatform) {
         }
         cordova.getAppVersion(function(version) {
                 appVersion = version;
+        });
+        // kick off the platform web client
+        Ionic.io();
+
+        // this will give you a fresh user or the previously saved 'current user'
+        var user = Ionic.User.current();
+
+        // if the user doesn't have an id, you'll need to give it one.
+        if (!user.id) {
+          user.id = Ionic.User.anonymousId();
+          // user.id = 'your-custom-user-id';
+        }
+
+        //persist the user
+        user.save();
+
+        var push = new Ionic.Push({
+            "debug": true
+        });
+
+        push.register(function(token){
+            console.log("Device token:", token.token);
+            push.addTokenToUser(user);
+            user.save();
         });
     });
 });

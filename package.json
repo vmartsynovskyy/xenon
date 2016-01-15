@@ -24,13 +24,11 @@
     "com.ionic.keyboard",
     "cordova-plugin-inappbrowser",
     "uk.co.whiteoctober.cordova.appversion",
-    "cordova-plugin-whitelist"
+    "cordova-plugin-whitelist",
+    "phonegap-plugin-push"
   ],
   "cordovaPlatforms": [
-    {
-      "platform": "android",
-      "locator": "browser"
-    },
-    "ios"
+    "ios",
+    "android"
   ]
 }

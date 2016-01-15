@@ -21,6 +21,7 @@ www/taco.json
 bin/
 bld/
 .vs/
+.io-config.json
 taco.json
 *.sln
 *.jsproj
