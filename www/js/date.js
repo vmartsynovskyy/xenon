@@ -27,22 +27,10 @@ Date.prototype.getTwoDigitDate = function() {
 };
 
 Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
-    startDate.setHours(0, 0, 0, 0);
-    var millisecondsInDay = 1000 * 60 * 60 * 24;
-    var weekdayCounter = 0;
-    for (var d = startDate; d.getTime() !== this.getTime() || d < 100000; d.incrementDate(1)) {
-        // increment weekday counter if the day isn't a weekend(sat + sun)
-        if (d.getDay() !== 0 && d.getDay() !== 6) {
-            weekdayCounter++;
-        }
-    }
-    return weekdayCounter;
-};
-Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
   startDate.setHours(0, 0, 0, 0);
   var millisecondsInDay = 1000 * 60 * 60 * 24;
   var weekdayCounter = 0;
-  for (var d = startDate; d.getTime() !== this.getTime() || d < 100000; d.incrementDate(1)) {
+  for (var d = startDate; d.toDateString() !== this.toDateString() || d < 100000; d.incrementDate(1)) {
     // increment weekday counter if the day isn't a weekend(sat + sun)
     if (d.getDay() !== 0 && d.getDay() !== 6) {
         weekdayCounter++;
@@ -53,6 +41,7 @@ Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
 
 Date.prototype.getRotation = function() {
     if(this.getDay() !== 6 && this.getDay() !== 0) {
+        debugger;
         if (!(window.localStorage['yearStartsFetched'])) {
             window.localStorage['yearStarts'] = JSON.stringify(DEFAULT_YEARSTARTS);
         }

@@ -22,6 +22,32 @@ var DEFAULT_YEARSTARTS = [
 
 var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
 
+function updateLocalNotifications() {
+    var notificationDate = new Date();
+    // update this from settings later
+    notificationDate.setHours(8,30,0,0);
+    var notifications = [];
+    for (var i = 0; i < 10; i++) {
+        console.log(notificationDate);
+        if (notificationDate.getDay() == 0) {
+            notificationDate.incrementDate(1);
+        } else if (notificationDate.getDay() == 6) {
+            notificationDate.incrementDate(2);
+        } else {
+            var rotation = notificationDate.getRotation();
+            var notification = {
+                id: i,
+                at: new Date(),
+                text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
+                icon: "res://icon.png",
+            };
+            notifications.push(notification);
+            notificationDate.incrementDate(1);
+        }
+    }
+    cordova.plugins.notification.local.schedule(notifications);
+}
+
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     errTitle = typeof errTitle !== 'undefined' ? errTitle : "No Internet Connection";
     errMessage = typeof errMessage !== 'undefined' ? errMessage : "Refresh again when you have an internet connection to get latest information";
@@ -501,11 +527,12 @@ xenon.run(function($ionicPlatform) {
                 appVersion = version;
         });
 
-        cordova.plugins.notification.local.schedule({
-            id: 1,
-            text: "Single Notification",
-            icon: "res://icon.png",
-        });
+        updateLocalNotifications();
+        for (var i = 0; i < 10; i++) {
+            cordova.plugins.notification.local.get(i, function (notification) {
+                console.log(notification)
+            });
+        }
         // kick off the platform web client
         // Ionic.io();
 
