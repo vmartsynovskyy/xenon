@@ -232,7 +232,9 @@ function twentyFourHourToAmPm(timestring) {
     var timeSplit = timestring.split(':');
     timeSplit[0] = parseInt(timeSplit[0]);
     var amPmTime = '';
-    if (timeSplit[0] > 12) {
+    if (timeSplit[0] == 12) {
+        amPmTime = timeSplit[0] + ':' + timeSplit[1] + 'pm';
+    } else if (timeSplit[0] > 12) {
         timeSplit[0] -= 12;
         amPmTime = timeSplit[0] + ':' + timeSplit[1] + 'pm';
     } else if (timeSplit[0] > 23) {
