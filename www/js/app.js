@@ -27,22 +27,30 @@ function updateLocalNotifications() {
     // update this from settings later
     notificationDate.setHours(8,30,0,0);
     var notifications = [];
-    for (var i = 0; i < 10; i++) {
+    var i = 0;
+    while (i < 10) {
         console.log(notificationDate);
         if (notificationDate.getDay() == 0) {
             notificationDate.incrementDate(1);
         } else if (notificationDate.getDay() == 6) {
             notificationDate.incrementDate(2);
         } else {
-            var rotation = notificationDate.getRotation();
-            var notification = {
-                id: i,
-                at: new Date(),
-                text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
-                icon: "res://icon.png",
-            };
-            notifications.push(notification);
-            notificationDate.incrementDate(1);
+            var id = notificationDate.id;
+            if (window.localStorage[id.toString()]) {
+                
+            } else {
+                var rotation = notificationDate.getRotation();
+                var notification = {
+                    id: id,
+                    at: new Date(),
+                    text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
+                    icon: "res://icon.png",
+                };
+                i++;
+                window.localStorage[id] = JSON.stringify(notification);
+                notifications.push(notification);
+                notificationDate.incrementDate(1);
+            }
         }
     }
     cordova.plugins.notification.local.schedule(notifications);

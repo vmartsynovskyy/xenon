@@ -228,6 +228,14 @@ Date.prototype.incrementDate = function(amount) {
     return this;
 }
 
+Object.defineProperty(Date, 'id', {
+    get: function() {
+        var idDate = this;
+        idDate.setHours(0, 0, 0, 0);
+        return idDate.getTime();
+    },
+});
+
 function twentyFourHourToAmPm(timestring) {
     var timeSplit = timestring.split(':');
     timeSplit[0] = parseInt(timeSplit[0]);
