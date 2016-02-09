@@ -23,6 +23,7 @@ var DEFAULT_YEARSTARTS = [
 var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
 
 function updateLocalNotifications() {
+    // updates next ten weekdays of notification
     var notificationDate = new Date();
     // update this from settings later
     notificationDate.setHours(8,30,0,0);
@@ -35,24 +36,28 @@ function updateLocalNotifications() {
         } else if (notificationDate.getDay() == 6) {
             notificationDate.incrementDate(2);
         } else {
-            var id = notificationDate.id;
-            if (window.localStorage[id.toString()]) {
-                
+            var rotation = notificationDate.getRotation();
+            var notification = {
+                id: notificationDate.id,
+                at: notificationDate,
+                text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
+                icon: "res://icon.png",
+            };
+            var storedNotification = notificationDate.notification;
+            if (storedNotification) {
+                if (storedNotification != notification) {
+                    // update the existing notification
+                    notificationDate.notification = notification;
+                }
             } else {
-                var rotation = notificationDate.getRotation();
-                var notification = {
-                    id: id,
-                    at: new Date(),
-                    text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
-                    icon: "res://icon.png",
-                };
                 i++;
-                window.localStorage[id] = JSON.stringify(notification);
+                notificationDate.notification = notification;
                 notifications.push(notification);
-                notificationDate.incrementDate(1);
             }
+            notificationDate.incrementDate(1);
         }
     }
+    console.log(notifications);
     cordova.plugins.notification.local.schedule(notifications);
 }
 

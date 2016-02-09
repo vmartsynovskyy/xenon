@@ -41,7 +41,6 @@ Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
 
 Date.prototype.getRotation = function() {
     if(this.getDay() !== 6 && this.getDay() !== 0) {
-        debugger;
         if (!(window.localStorage['yearStartsFetched'])) {
             window.localStorage['yearStarts'] = JSON.stringify(DEFAULT_YEARSTARTS);
         }
@@ -228,12 +227,25 @@ Date.prototype.incrementDate = function(amount) {
     return this;
 }
 
-Object.defineProperty(Date, 'id', {
+Object.defineProperty(Date.prototype, 'id', {
     get: function() {
-        var idDate = this;
+        var idDate = new Date(this.getTime());
         idDate.setHours(0, 0, 0, 0);
         return idDate.getTime();
     },
+});
+
+Object.defineProperty(Date.prototype, 'notification', {
+    get: function() {
+        if (window.localStorage[this.id.toString()]) {
+            return JSON.parse(window.localStorage[this.id.toString()]);
+        } else {
+            return undefined;
+        }
+    },
+    set: function(notification) {
+        window.localStorage[this.id.toString()] = JSON.stringify(notification);
+    }
 });
 
 function twentyFourHourToAmPm(timestring) {
