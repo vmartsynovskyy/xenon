@@ -22,6 +22,10 @@ var DEFAULT_YEARSTARTS = [
 
 var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
 
+function updateSingleDailyNotification (date) {
+    cordova.plugins.notification.local.update(date.notification);
+}
+
 function updateLocalNotifications() {
     // updates next ten weekdays of notification
     var notificationDate = new Date();
@@ -54,6 +58,35 @@ function updateLocalNotifications() {
                 notificationDate.notification = notification;
                 notifications.push(notification);
             }
+            angular.injector(['xenon']).get('Day').call().getDay({  date: notificationDate.getDate(), 
+                                                                    month:notificationDate.getFullYear()
+                                                                },
+                function(result) {
+                    if (result.length > 0) {
+                        var dayName = result[0].name;
+                        var dayType = result[0].day_type;  
+                        var dayAnnouncement = result[0].announcement;
+                        var notificationMessage;
+
+                        if (dayType != 'normal') {
+                            if (dayType == 'holiday') {
+                                notificationMessage = dayName + ': No school today';
+                            } else if (dayType == 'pro-d') {
+                                notificationMessage = 'Pro-D Day: No school today';
+                            } else if (dayType === 'late-start') {
+                                notificationMessage = 'Late Start @ 9:50 am today';
+                            } else {
+                                notificationMessage = dayName + ' today';
+                            }
+
+                            var updatedNotification = notificationDate.notification;
+                            updatedNotification.text = notificationMessage;
+                            notificationDate.notification = updatedNotification;
+                            updateSingleDailyNotification(notificationDate);
+                        }
+                    }
+                }
+            );
             notificationDate.incrementDate(1);
         }
     }
