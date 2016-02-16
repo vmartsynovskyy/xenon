@@ -22,78 +22,6 @@ var DEFAULT_YEARSTARTS = [
 
 var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
 
-function updateSingleDailyNotification (date) {
-    cordova.plugins.notification.local.update(date.notification);
-}
-
-function updateLocalNotifications() {
-    // updates next ten weekdays of notification
-    var notificationDate = new Date();
-    // update this from settings later
-    notificationDate.setHours(8,30,0,0);
-    var notifications = [];
-    var i = 0;
-    while (i < 10) {
-        console.log(notificationDate);
-        if (notificationDate.getDay() == 0) {
-            notificationDate.incrementDate(1);
-        } else if (notificationDate.getDay() == 6) {
-            notificationDate.incrementDate(2);
-        } else {
-            var rotation = notificationDate.getRotation();
-            var notification = {
-                id: notificationDate.id,
-                at: notificationDate,
-                text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
-                icon: "res://icon.png",
-            };
-            var storedNotification = notificationDate.notification;
-            if (storedNotification) {
-                if (storedNotification != notification) {
-                    // update the existing notification
-                    notificationDate.notification = notification;
-                }
-            } else {
-                i++;
-                notificationDate.notification = notification;
-                notifications.push(notification);
-            }
-            angular.injector(['xenon']).get('Day').call().getDay({  date: notificationDate.getDate(), 
-                                                                    month:notificationDate.getFullYear()
-                                                                },
-                function(result) {
-                    if (result.length > 0) {
-                        var dayName = result[0].name;
-                        var dayType = result[0].day_type;  
-                        var dayAnnouncement = result[0].announcement;
-                        var notificationMessage;
-
-                        if (dayType != 'normal') {
-                            if (dayType == 'holiday') {
-                                notificationMessage = dayName + ': No school today';
-                            } else if (dayType == 'pro-d') {
-                                notificationMessage = 'Pro-D Day: No school today';
-                            } else if (dayType === 'late-start') {
-                                notificationMessage = 'Late Start @ 9:50 am today';
-                            } else {
-                                notificationMessage = dayName + ' today';
-                            }
-
-                            var updatedNotification = notificationDate.notification;
-                            updatedNotification.text = notificationMessage;
-                            notificationDate.notification = updatedNotification;
-                            updateSingleDailyNotification(notificationDate);
-                        }
-                    }
-                }
-            );
-            notificationDate.incrementDate(1);
-        }
-    }
-    console.log(notifications);
-    cordova.plugins.notification.local.schedule(notifications);
-}
-
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     errTitle = typeof errTitle !== 'undefined' ? errTitle : "No Internet Connection";
     errMessage = typeof errMessage !== 'undefined' ? errMessage : "Refresh again when you have an internet connection to get latest information";
@@ -243,6 +171,76 @@ xenon.factory('About', function($resource, CacheFactory) {
         getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url:'http://107.170.252.240/about/'},
     });
 });
+
+xenon.factory('Notifications', ['Day', function(Day) {
+    return function updateLocalNotifications() {
+        // updates next ten weekdays of notification
+        var notificationDate = new Date();
+        // update this from settings later
+        notificationDate.setHours(8,30,0,0);
+        var notifications = [];
+        var i = 0;
+        while (i < 10) {
+            console.log(notificationDate);
+            if (notificationDate.getDay() == 0) {
+                notificationDate.incrementDate(1);
+            } else if (notificationDate.getDay() == 6) {
+                notificationDate.incrementDate(2);
+            } else {
+                var rotation = notificationDate.getRotation();
+                var notification = {
+                    id: notificationDate.id,
+                    at: notificationDate,
+                    text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
+                    icon: "res://icon.png",
+                };
+                var storedNotification = notificationDate.notification;
+                if (storedNotification) {
+                    if (storedNotification != notification) {
+                        // update the existing notification
+                        notificationDate.notification = notification;
+                    }
+                } else {
+                    i++;
+                    notificationDate.notification = notification;
+                    notifications.push(notification);
+                }
+                Day.getDay({date: notificationDate.getDate(), 
+                            month:notificationDate.getMonth() + 1,
+                            year: notificationDate.getFullYear(),},
+                    function(result) {
+                        if (result.length > 0) {
+                            var dayName = result[0].name;
+                            var dayType = result[0].day_type;  
+                            var dayAnnouncement = result[0].announcement;
+                            var notificationMessage;
+
+                            if (dayType != 'normal') {
+                                if (dayType == 'holiday') {
+                                    notificationMessage = dayName + ': No school today';
+                                } else if (dayType == 'pro-d') {
+                                    notificationMessage = 'Pro-D Day: No school today';
+                                } else if (dayType === 'late-start') {
+                                    notificationMessage = 'Late Start @ 9:50 am today';
+                                } else {
+                                    notificationMessage = dayName + ' today';
+                                }
+
+                                var updatedNotification = notificationDate.notification;
+                                updatedNotification.text = notificationMessage;
+                                notificationDate.notification = updatedNotification;
+                                cordova.plugins.notification.local.update(updatedNotification);
+                            }
+                        }
+                    }
+                );
+                notificationDate.incrementDate(1);
+            }
+        }
+        console.log(notifications);
+        cordova.plugins.notification.local.schedule(notifications);
+    };
+}]);
 
 xenon.controller('SettingsCtrl', ['$scope',
     function($scope) {
@@ -559,7 +557,9 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(function($ionicPlatform) {
+xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notifications) {
+    Notifications();
+
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -580,4 +580,4 @@ xenon.run(function($ionicPlatform) {
             });
         }
     });
-});
+}]);
