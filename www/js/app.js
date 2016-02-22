@@ -20,7 +20,7 @@ var DEFAULT_YEARSTARTS = [
     }
 ];
 
-var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate']);
+var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate', 'ngCordova']);
 
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     errTitle = typeof errTitle !== 'undefined' ? errTitle : "No Internet Connection";
@@ -172,7 +172,7 @@ xenon.factory('About', function($resource, CacheFactory) {
     });
 });
 
-xenon.factory('Notifications', ['Day', function(Day) {
+xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatform', function(Day, $cordovaLocalNotification, $ionicPlatform) {
     return function updateLocalNotifications() {
         // updates next ten weekdays of notification
         var notificationDate = new Date();
@@ -181,12 +181,12 @@ xenon.factory('Notifications', ['Day', function(Day) {
         var notifications = [];
         var i = 0;
         while (i < 10) {
-            console.log(notificationDate);
             if (notificationDate.getDay() == 0) {
                 notificationDate.incrementDate(1);
             } else if (notificationDate.getDay() == 6) {
                 notificationDate.incrementDate(2);
             } else {
+                console.log(notificationDate);
                 var rotation = notificationDate.getRotation();
                 var notification = {
                     id: notificationDate.id,
@@ -201,15 +201,15 @@ xenon.factory('Notifications', ['Day', function(Day) {
                         notificationDate.notification = notification;
                     }
                 } else {
-                    i++;
                     notificationDate.notification = notification;
-                    notifications.push(notification);
                 }
+                notifications.push(notification);
                 Day.getDay({date: notificationDate.getDate(), 
                             month:notificationDate.getMonth() + 1,
                             year: notificationDate.getFullYear(),},
                     function(result) {
                         if (result.length > 0) {
+                            var dayDate = new Date(result[0].date);
                             var dayName = result[0].name;
                             var dayType = result[0].day_type;  
                             var dayAnnouncement = result[0].announcement;
@@ -226,19 +226,23 @@ xenon.factory('Notifications', ['Day', function(Day) {
                                     notificationMessage = dayName + ' today';
                                 }
 
-                                var updatedNotification = notificationDate.notification;
+                                var updatedNotification = dayDate.notification;
+                                console.log(updatedNotification);
                                 updatedNotification.text = notificationMessage;
-                                notificationDate.notification = updatedNotification;
+                                dayDate.notification = updatedNotification;
                                 cordova.plugins.notification.local.update(updatedNotification);
                             }
                         }
                     }
                 );
                 notificationDate.incrementDate(1);
+                i++;
             }
         }
         console.log(notifications);
-        cordova.plugins.notification.local.schedule(notifications);
+        $ionicPlatform.ready(function() {
+            $cordovaLocalNotification.schedule(notifications);
+        });
     };
 }]);
 
@@ -558,8 +562,6 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 
 var appVersion = '0.0.0';
 xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notifications) {
-    Notifications();
-
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -573,11 +575,17 @@ xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notificat
                 appVersion = version;
         });
 
-        updateLocalNotifications();
-        for (var i = 0; i < 10; i++) {
-            cordova.plugins.notification.local.get(i, function (notification) {
+        Notifications();
+        cordova.plugins.notification.local.clearAll();
+        var testDate = new Date();
+        cordova.plugins.notification.local.getScheduledIds(function(result){
+            console.log(result);    
+        });
+        for (var i = 0; i < 14; i++) {
+            cordova.plugins.notification.local.get(testDate.id, function (notification) {
                 console.log(notification)
             });
+            testDate.incrementDate(1);
         }
     });
 }]);
