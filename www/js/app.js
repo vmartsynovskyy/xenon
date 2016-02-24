@@ -185,8 +185,9 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                 notificationDate.incrementDate(1);
             } else if (notificationDate.getDay() == 6) {
                 notificationDate.incrementDate(2);
+            } else if (notificationDate.getTime() < (new Date()).getTime()) {
+                notificationDate.incrementDate(1);
             } else {
-                console.log(notificationDate);
                 var rotation = notificationDate.getRotation();
                 var notification = {
                     id: notificationDate.id,
@@ -576,7 +577,6 @@ xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notificat
         });
 
         Notifications();
-        cordova.plugins.notification.local.clearAll();
         var testDate = new Date();
         cordova.plugins.notification.local.getScheduledIds(function(result){
             console.log(result);    

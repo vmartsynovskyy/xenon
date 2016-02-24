@@ -231,14 +231,16 @@ Object.defineProperty(Date.prototype, 'id', {
     get: function() {
         var idDate = new Date(this.getTime());
         idDate.setHours(0, 0, 0, 0);
-        return idDate.getTime();
+        return idDate.getTime() / 100000;
     },
 });
 
 Object.defineProperty(Date.prototype, 'notification', {
     get: function() {
         if (window.localStorage[this.id.toString()]) {
-            return JSON.parse(window.localStorage[this.id.toString()]);
+            var returnVal = JSON.parse(window.localStorage[this.id.toString()]);
+            returnVal.at = (new Date(returnVal.at)).getTime();
+            return returnVal;
         } else {
             return undefined;
         }
