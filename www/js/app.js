@@ -176,8 +176,8 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
     return function updateLocalNotifications() {
         // updates next ten weekdays of notification
         var notificationDate = new Date();
-        // update this from settings later
-        notificationDate.setHours(8,30,0,0);
+        var notificationTime = JSON.parse(window.localStorage['notificationTime']);
+        notificationDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
         var notifications = [];
         var i = 0;
         while (i < 10) {
@@ -247,7 +247,7 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
     };
 }]);
 
-xenon.controller('SettingsCtrl', ['$scope',
+xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
     function($scope) {
         if (window.localStorage['blockClasses']) {
             $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
@@ -256,6 +256,12 @@ xenon.controller('SettingsCtrl', ['$scope',
         $scope.blockChanged = function() {
             console.log($scope.blockClasses);
             window.localStorage['blockClasses'] = JSON.stringify($scope.blockClasses);
+        }
+
+        $scope.timeChanged = function() {
+            Notifications();
+            console.log($scope.notificationTimeSelector);
+            window.localStorage['notificationTime'] = JSON.stringify($scope.notificationTimeSelector);
         }
 
         $scope.closeKeyboard = function() {

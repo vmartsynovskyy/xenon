@@ -4,21 +4,23 @@
   </ion-nav-title>
   <ion-content class="staff-background">
     <form name="myForm" class="settings-form" ng-controller="SettingsCtrl as settingsCtrl">
-        <label for="block1Class"> Block 1 Class: </label>
+        <label for="notificationTimeSelector">Daily Notifications: </label>
+        <input type="time" id="notificationTimeSelector" ng-model="notificationTimeSelector" ng-change="timeChanged()"/>
+        <label for="block1Class"> Block 1 Class Name: </label>
         <input type="text" class="block-input" id="block1Class" ng-model="blockClasses[0]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block2Class"> Block 2 Class: </label>
+        <label for="block2Class"> Block 2 Class Name: </label>
         <input type="text" class="block-input" id="block2Class" ng-model="blockClasses[1]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block3Class"> Block 3 Class: </label>
+        <label for="block3Class"> Block 3 Class Name: </label>
         <input type="text" class="block-input" id="block3Class" ng-model="blockClasses[2]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block4Class"> Block 4 Class: </label>
+        <label for="block4Class"> Block 4 Class Name: </label>
         <input type="text" class="block-input" id="block4Class" ng-model="blockClasses[3]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block5Class"> Block 5 Class: </label>
+        <label for="block5Class"> Block 5 Class Name: </label>
         <input type="text" class="block-input" id="block5Class" ng-model="blockClasses[4]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block6Class"> Block 6 Class: </label>
+        <label for="block6Class"> Block 6 Class Name: </label>
         <input type="text" class="block-input" id="block6Class" ng-model="blockClasses[5]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block7Class"> Block 7 Class: </label>
+        <label for="block7Class"> Block 7 Class Name: </label>
         <input type="text" class="block-input" id="block7Class" ng-model="blockClasses[6]" on-return="closeKeyboard()" ng-change="blockChanged()" />
-        <label for="block8Class"> Block 8 Class: </label>
+        <label for="block8Class"> Block 8 Class Name: </label>
         <input type="text" class="block-input" id="block8Class" ng-model="blockClasses[7]" on-return="closeKeyboard()" ng-change="blockChanged()" />
     </form>
   </ion-content>
