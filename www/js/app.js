@@ -175,8 +175,17 @@ xenon.factory('About', function($resource, CacheFactory) {
 xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatform', function(Day, $cordovaLocalNotification, $ionicPlatform) {
     return function updateLocalNotifications() {
         // updates next ten weekdays of notification
+        cordova.plugins.notification.local.hasPermission(function(success) {
+            if (!success) {
+                ccordova.plugins.notification.local.registerPermission(function(success) {
+                    if (!success) {
+                        console.log("Permission for notifications denied");
+                    }
+                });
+            }
+        });
         var notificationDate = new Date();
-        var notificationTime = JSON.parse(window.localStorage['notificationTime']);
+        var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
         notificationDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
         var notifications = [];
         var i = 0;
@@ -191,7 +200,7 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                 var rotation = notificationDate.getRotation();
                 var notification = {
                     id: notificationDate.id,
-                    at: notificationDate,
+                    at: notificationDate.getTime(),
                     text: ("Rotation today: " + rotation[0].toString() + ", " + rotation[1].toString() + ", " + rotation[2].toString() + ", " + rotation[3].toString()),
                     icon: "res://icon.png",
                 };
@@ -248,9 +257,12 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
 }]);
 
 xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
-    function($scope) {
+    function($scope, Notifications) {
         if (window.localStorage['blockClasses']) {
             $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
+        }
+        if (window.localStorage['notificationTime']) {
+            $scope.notificationTimeSelector = new Date(JSON.parse(window.localStorage['notificationTime']));
         }
 
         $scope.blockChanged = function() {
