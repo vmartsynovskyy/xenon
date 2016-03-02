@@ -509,7 +509,6 @@ xenon.run(function($ionicPlatform) {
         // if the user doesn't have an id, you'll need to give it one.
         if (!user.id) {
           user.id = Ionic.User.anonymousId();
-          // user.id = 'your-custom-user-id';
         }
 
         //persist the user
