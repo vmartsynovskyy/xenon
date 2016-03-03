@@ -82,7 +82,7 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
               },
         }
     });
-    
+
     $stateProvider.state('day', {
         url: '/day?date',
         views: {
@@ -92,7 +92,7 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             }
         }
     });
-    
+
     $stateProvider.state('contact', {
         url: '/contact',
         views: {
@@ -102,7 +102,7 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             },
         }
     });
-    
+
     $stateProvider.state('discover', {
         url: '/discover',
         views: {
@@ -112,7 +112,7 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             },
         }
     });
-    
+
     $stateProvider.state('about', {
         url: '/about',
         views: {
@@ -122,7 +122,7 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
             },
         }
     });
-    
+
     $stateProvider.state('settings', {
         url: '/settings',
         views: {
@@ -269,6 +269,8 @@ xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
         }
         if (window.localStorage['notificationTime']) {
             $scope.notificationTimeSelector = new Date(JSON.parse(window.localStorage['notificationTime']));
+        } else {
+            window.localStorage['notificationTime'] = JSON.stringify(new Date(1456848000000));
         }
 
         $scope.blockChanged = function() {
@@ -277,9 +279,9 @@ xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
         }
 
         $scope.timeChanged = function() {
-            Notifications();
             console.log($scope.notificationTimeSelector);
             window.localStorage['notificationTime'] = JSON.stringify($scope.notificationTimeSelector);
+            Notifications();
         }
 
         $scope.closeKeyboard = function() {
@@ -336,7 +338,7 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
         $scope.about = DEFAULT_ABOUT;
         $scope.version = appVersion;
         setAboutFromWeb();
-        
+
         $scope.doRefresh = function() {
             if (navigator.connection.type === 'none') {
                 createErrorPopup($ionicPopup, $scope);
@@ -382,7 +384,7 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
             setStaffFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
         }
-        
+
         $scope.openLink = function(url) {
             window.open(url, '_system');
         }
@@ -463,7 +465,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             Vacation.getVacations(function(result) {
                 window.localStorage['vacations'] = JSON.stringify(result);
             });
-            
+
             YearStart.getYearStarts(function(result) {
                 window.localStorage['yearStarts'] = JSON.stringify(result);
                 window.localStorage['yearStartsFetched'] = 'true';
@@ -554,14 +556,14 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             $ionicViewSwitcher.nextDirection('back');
             $location.search('date', dateToRender.valueOf());
         };
-        
+
         $scope.isThisWeek = function() {
             if (!$location.search().date) {
                 return true;
             }
             return $location.search().date == new Date(Date.now()).getStartOfWeek().valueOf();
         }
-        
+
         $scope.switchToThisWeek = function() {
             if ($location.search().date) {
                 if ($location.search().date != new Date(Date.now()).getStartOfWeek().valueOf()) {
