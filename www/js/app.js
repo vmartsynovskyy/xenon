@@ -20,6 +20,8 @@ var DEFAULT_YEARSTARTS = [
     }
 ];
 
+var DEFAULT_DOMAIN = "http://windsorapp.me/";
+
 var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate', 'ngCordova']);
 
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
@@ -134,50 +136,50 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
 
 xenon.factory('Day', function($resource, CacheFactory) {
     CacheFactory('days');
-    return $resource('http://107.170.252.240/days/', {}, {
-        getDay: {cache: CacheFactory.get('days'), isArray: true, method: 'GET', url:'http://107.170.252.240/days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
+    return $resource(DEFAULT_DOMAIN + 'days/', {}, {
+        getDay: {cache: CacheFactory.get('days'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'days/?d=:date&m=:month&y=:year', params: {date:'@date', month: '@month', year: '@year'}},
     });
 });
 
 xenon.factory('Staff', function($resource, CacheFactory) {
     CacheFactory('staff');
-    return $resource('http://107.170.252.240/staff/', {}, {
-        getStaff: {cache: CacheFactory.get('staff'), isArray: true, method: 'GET', url:'http://107.170.252.240/staff/'},
+    return $resource(DEFAULT_DOMAIN + 'staff/', {}, {
+        getStaff: {cache: CacheFactory.get('staff'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'staff/'},
     });
 });
 
 xenon.factory('Discover', function($resource, CacheFactory) {
     CacheFactory('discover');
-    return $resource('http://107.170.252.240/discover/', {}, {
-        getDiscover: {cache: CacheFactory.get('discover'), isArray: true, method: 'GET', url:'http://107.170.252.240/discover/'},
+    return $resource(DEFAULT_DOMAIN + 'discover/', {}, {
+        getDiscover: {cache: CacheFactory.get('discover'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'discover/'},
     });
 });
 
 xenon.factory('Vacation', function($resource, CacheFactory) {
-    return $resource('http://107.170.252.240/vacation/', {}, {
-        getVacations: {cache: false, isArray: true, method: 'GET', url:'http://107.170.252.240/vacation/'},
+    return $resource(DEFAULT_DOMAIN + 'vacation/', {}, {
+        getVacations: {cache: false, isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'vacation/'},
     });
 });
 
 xenon.factory('YearStart', function($resource, CacheFactory) {
-    return $resource('http://107.170.252.240/yearstarts/', {}, {
-        getYearStarts: {cache: false, isArray: true, method: 'GET', url:'http://107.170.252.240/yearstarts/'},
+    return $resource(DEFAULT_DOMAIN + 'yearstarts/', {}, {
+        getYearStarts: {cache: false, isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'yearstarts/'},
     });
 });
 
 xenon.factory('About', function($resource, CacheFactory) {
     CacheFactory('about');
-    return $resource('http://107.170.252.240/about/', {}, {
-        getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url:'http://107.170.252.240/about/'},
+    return $resource(DEFAULT_DOMAIN + 'about/', {}, {
+        getAbout: {cache: CacheFactory.get('about'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'about/'},
     });
 });
 
 xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatform', function(Day, $cordovaLocalNotification, $ionicPlatform) {
     return function updateLocalNotifications() {
         // updates next ten weekdays of notification
-        cordova.plugins.notification.local.hasPermission(function(success) {
+        $cordovaLocalNotification.hasPermission(function(success) {
             if (!success) {
-                ccordova.plugins.notification.local.registerPermission(function(success) {
+                $cordovaLocalNotification.registerPermission(function(success) {
                     if (!success) {
                         console.log("Permission for notifications denied");
                     }
@@ -185,7 +187,11 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
             }
         });
         var notificationDate = new Date();
-        var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
+        if (window.localStorage['notificationTime']) {
+            var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
+        } else {
+            var notificationTime = new Date(1456848000000);
+        }
         notificationDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
         var notifications = [];
         var i = 0;
@@ -240,7 +246,7 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                                 console.log(updatedNotification);
                                 updatedNotification.text = notificationMessage;
                                 dayDate.notification = updatedNotification;
-                                cordova.plugins.notification.local.update(updatedNotification);
+                                $cordovaLocalNotification.update(updatedNotification);
                             }
                         }
                     }
@@ -580,7 +586,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notifications) {
+xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', function($ionicPlatform, Notifications, $cordovaLocalNotification) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -596,11 +602,11 @@ xenon.run(['$ionicPlatform', 'Notifications', function($ionicPlatform, Notificat
 
         Notifications();
         var testDate = new Date();
-        cordova.plugins.notification.local.getScheduledIds(function(result){
+        $cordovaLocalNotification.getScheduledIds(function(result){
             console.log(result);    
         });
         for (var i = 0; i < 14; i++) {
-            cordova.plugins.notification.local.get(testDate.id, function (notification) {
+            $cordovaLocalNotification.get(testDate.id, function (notification) {
                 console.log(notification)
             });
             testDate.incrementDate(1);
