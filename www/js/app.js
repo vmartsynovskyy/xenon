@@ -279,9 +279,10 @@ xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
         }
 
         $scope.timeChanged = function() {
-            console.log($scope.notificationTimeSelector);
             window.localStorage['notificationTime'] = JSON.stringify($scope.notificationTimeSelector);
             Notifications();
+            console.log($scope.notificationTimeSelector);
+
         }
 
         $scope.closeKeyboard = function() {
@@ -588,30 +589,45 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', function($ionicPlatform, Notifications, $cordovaLocalNotification) {
-    $ionicPlatform.ready(function() {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        if(window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        }
-        if(window.StatusBar) {
-            StatusBartyleDefault();
-        }
-        cordova.getAppVersion(function(version) {
-                appVersion = version;
-        });
-
-        Notifications();
-        var testDate = new Date();
-        $cordovaLocalNotification.getScheduledIds(function(result){
-            console.log(result);    
-        });
-        for (var i = 0; i < 14; i++) {
-            $cordovaLocalNotification.get(testDate.id, function (notification) {
-                console.log(notification)
+xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope',
+    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope) {
+        $ionicPlatform.ready(function() {
+            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+            // for form inputs)
+            if(window.cordova && window.cordova.plugins.Keyboard) {
+                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            }
+            if(window.StatusBar) {
+                StatusBartyleDefault();
+            }
+            cordova.getAppVersion(function(version) {
+                    appVersion = version;
             });
-            testDate.incrementDate(1);
-        }
-    });
+
+            Notifications();
+
+
+            var testDate = new Date();
+             if (window.localStorage['notificationTime']) {
+                var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
+            } else {
+                var notificationTime = new Date(1456848000000);
+            }
+            testDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
+            $cordovaLocalNotification.getScheduledIds(function(result){
+                console.log(result);    
+            });
+            for (var i = 0; i < 14; i++) {
+                $cordovaLocalNotification.get(testDate.id, function (notification) {
+                    console.log(notification)
+                });
+                testDate.incrementDate(1);
+            }
+
+            $rootScope.$on('$cordovaLocalNotification:trigger', function(event, notification, state) {
+                // listener to update local notifications every time one is triggered
+                // this is so that they trigger every day, even when the app remains closed for a long time
+                Notifications();
+            });
+        });
 }]);
