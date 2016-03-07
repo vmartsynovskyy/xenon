@@ -591,17 +591,17 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope',
-    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope) {
+xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope', '$cordovaStatusbar',
+    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope, $cordovaStatusbar) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
-            if(window.StatusBar) {
-                StatusBartyleDefault();
-            }
+
+            $cordovaStatusbar.styleHex('#37bc61');
+
             cordova.getAppVersion(function(version) {
                     appVersion = version;
             });
