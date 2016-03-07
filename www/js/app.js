@@ -202,6 +202,8 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                 notificationDate.incrementDate(2);
             } else if (notificationDate.getTime() < (new Date()).getTime()) {
                 notificationDate.incrementDate(1);
+            } else if (notificationDate.isDuringVacation()) {
+                notificationDate.incrementDate(1);
             } else {
                 var rotation = notificationDate.getRotation();
                 var notification = {
