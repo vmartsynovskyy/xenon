@@ -607,24 +607,6 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
             });
             Notifications();
 
-
-            var testDate = new Date();
-             if (window.localStorage['notificationTime']) {
-                var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
-            } else {
-                var notificationTime = new Date(1456848000000);
-            }
-            testDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
-            $cordovaLocalNotification.getScheduledIds(function(result){
-                console.log(result);    
-            });
-            for (var i = 0; i < 14; i++) {
-                $cordovaLocalNotification.get(testDate.id, function (notification) {
-                    console.log(notification)
-                });
-                testDate.incrementDate(1);
-            }
-
             $rootScope.$on('$cordovaLocalNotification:trigger', function(event, notification, state) {
                 // listener to update local notifications every time one is triggered
                 // this is so that they trigger every day, even when the app remains closed for a long time
