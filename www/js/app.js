@@ -605,7 +605,6 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
             cordova.getAppVersion(function(version) {
                     appVersion = version;
             });
-
             Notifications();
 
 
