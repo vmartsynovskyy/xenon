@@ -4,7 +4,7 @@
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.1.0",
     "angular-mocks": "~1.4.7",
-    "ionic-platform-web-client": "~0.2.1"
+    "ionic-platform-web-client": "^0.5.2"
   },
   "resolutions": {
     "angular": "1.4.8"

@@ -296,6 +296,10 @@ $normal_font: 'Roboto-Medium', sans-serif;
 }
 
 .info .name {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin: 0;
     font: 95% $light_font;
     color: $darkgrey

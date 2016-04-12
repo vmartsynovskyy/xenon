@@ -1,3 +1,31 @@
+## 0.5.2
+
+* (push) Allow saving of tokens without user context
+
+## 0.5.1
+
+* (auth) (user) Pass additional user details with user signup
+
+## 0.5.0
+
+* (user) Added `resetPassword()` method to users
+* (user) (fix) Update user details with custom data during `save()`
+
+## 0.4.0
+
+* (auth) Added ability to send data in custom authentication request
+
+## 0.3.0
+
+* (auth) Introduced Authentication component
+* **(breaking)** both Ionic.User and Ionic.Push utilize new beta API
+  access and have modified/added/removed some of the current methods
+* (push) Added public method to get push pluginI
+* (user) Added migrate method for alpha users
+* (user) (fix) Falsy values are allowed in `get(key, defaultValue)`
+* (analytics) (fix) events are no longer mutated
+
+
 ## 0.2.1
 
 * (push) (fix) prevent dev-mode from registering multiple callbacks
