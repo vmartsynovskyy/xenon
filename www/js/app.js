@@ -499,11 +499,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                             // changes $scope.days when data is retrieved from web API
                             if(new Date(result[0].date).getDate() === $scope.days[iter].getDate()) {
                                 $scope.days[iter].day_type = result[0].day_type;
-                                if ($scope.days[iter].day_type != 'normal') {
-                                    $scope.days[iter].name = result[0].name;
-                                } else {
-                                    $scope.days[iter].name = '';
-                                }
+                                $scope.days[iter].name = result[0].name;
                                 $scope.days[iter].generateBlocks();
                                 $scope.days[iter].announcement = result[0].announcement;
                                 if (result[0].school_start_time && result[0].school_end_time) {
