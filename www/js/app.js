@@ -608,5 +608,15 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
                 // this is so that they trigger every day, even when the app remains closed for a long time
                 Notifications();
             });
+
+            // Push Notification Setup
+            var push = new Ionic.Push({
+              "debug": true
+            });
+
+            push.register(function(token) {
+              console.log("Device token:",token.token);
+              push.saveToken(token);  // persist the token in the Ionic Platform
+            });
         });
 }]);

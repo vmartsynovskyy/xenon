@@ -1,3 +1,21 @@
+## 0.7.1
+
+* (fix) Pushed invalid build (0.7.0 is a broken build)
+
+## 0.7.0
+
+* **(breaking)** (deploy) Version 0.5.0 or greater of `ionic-plugin-deploy` is required
+  to use deploy correctly.
+
+## 0.6.1
+
+* (push) (fix) `getPushPlugin` will now correctly return the plugin instance or `null`
+
+## 0.6.0
+
+* **(breaking)** (push) angular integration now correctly uses notification.payload and
+  the `$stateParams` property is now passed as a standard object, not a string.
+
 ## 0.5.2
 
 * (push) Allow saving of tokens without user context
