@@ -587,8 +587,8 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope', '$cordovaStatusbar',
-    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope, $cordovaStatusbar) {
+xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope', '$cordovaStatusbar', '$http',
+    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope, $cordovaStatusbar, $http) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -616,6 +616,11 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
 
             push.register(function(token) {
               console.log("Device token:",token.token);
+              $http({
+                'method': 'POST',
+                'url': DEFAULT_DOMAIN + 'register-device/',
+                'data': token.token,
+              });
               push.saveToken(token);  // persist the token in the Ionic Platform
             });
         });
