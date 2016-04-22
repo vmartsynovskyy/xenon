@@ -499,11 +499,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                             // changes $scope.days when data is retrieved from web API
                             if(new Date(result[0].date).getDate() === $scope.days[iter].getDate()) {
                                 $scope.days[iter].day_type = result[0].day_type;
-                                if ($scope.days[iter].day_type != 'normal') {
-                                    $scope.days[iter].name = result[0].name;
-                                } else {
-                                    $scope.days[iter].name = '';
-                                }
+                                $scope.days[iter].name = result[0].name;
                                 $scope.days[iter].generateBlocks();
                                 $scope.days[iter].announcement = result[0].announcement;
                                 if (result[0].school_start_time && result[0].school_end_time) {
@@ -591,8 +587,8 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
 }]);
 
 var appVersion = '0.0.0';
-xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope', '$cordovaStatusbar',
-    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope, $cordovaStatusbar) {
+xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$rootScope', '$cordovaStatusbar', '$http',
+    function($ionicPlatform, Notifications, $cordovaLocalNotification, $rootScope, $cordovaStatusbar, $http) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -605,31 +601,27 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
             cordova.getAppVersion(function(version) {
                     appVersion = version;
             });
-
             Notifications();
-
-
-            var testDate = new Date();
-             if (window.localStorage['notificationTime']) {
-                var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
-            } else {
-                var notificationTime = new Date(1456848000000);
-            }
-            testDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
-            $cordovaLocalNotification.getScheduledIds(function(result){
-                console.log(result);    
-            });
-            for (var i = 0; i < 14; i++) {
-                $cordovaLocalNotification.get(testDate.id, function (notification) {
-                    console.log(notification)
-                });
-                testDate.incrementDate(1);
-            }
 
             $rootScope.$on('$cordovaLocalNotification:trigger', function(event, notification, state) {
                 // listener to update local notifications every time one is triggered
                 // this is so that they trigger every day, even when the app remains closed for a long time
                 Notifications();
+            });
+
+            // Push Notification Setup
+            var push = new Ionic.Push({
+              "debug": true
+            });
+
+            push.register(function(token) {
+              console.log("Device token:",token.token);
+              $http({
+                'method': 'POST',
+                'url': DEFAULT_DOMAIN + 'register-device/',
+                'data': token.token,
+              });
+              push.saveToken(token);  // persist the token in the Ionic Platform
             });
         });
 }]);

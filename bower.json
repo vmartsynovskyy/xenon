@@ -1,13 +1,36 @@
 {
   "name": "xenon",
-  "private": "true",
-  "devDependencies": {
-    "ionic": "driftyco/ionic-bower#1.1.0",
+  "description": "xenon: An Ionic project",
+  "main": "",
+  "authors": [
+    "Vadym Martsynovskyy <maldorlevr@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/MaldorLevr/xenon",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-animate": "1.4.3",
+    "angular-cache": "~4.4.2",
+    "angular-resource": "~1.4.8",
     "angular-mocks": "~1.4.7",
-    "ionic-platform-web-client": "~0.2.1"
+    "angular-sanitize": "1.4.3",
+    "angular-ui-router": "0.2.13",
+    "ionic-platform-web-client": "^0.5.2",
+    "ionic": "driftyco/ionic-bower#1.1.0"
   },
   "resolutions": {
-    "angular": "1.4.8"
+    "ionic-platform-web-client": "^0.7.1"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "ionic-platform-web-client": "^0.7.1"
+  }
 }

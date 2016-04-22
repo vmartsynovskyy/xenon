@@ -22,7 +22,7 @@
                 <div class="time" ng-if="!day.diplaySchoolTime && day.rotation">8:30am - 3:00pm</div>
                 <div class="rotation" ng-if="day.rotation">{{day.rotation}}</div>
             </span>
-            <div class="name" ng-if="day.name && day.day_type !== 'holiday'">{{day.name}}</div>
+            <div class="name" ng-if="day.name">{{day.name}}</div>
         </div>
         <div class="info" ng-if="day.day_type == 'early-d'">
             <span>
