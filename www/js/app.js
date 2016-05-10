@@ -56,11 +56,9 @@ xenon.directive('input', function($timeout){
             element.bind('keydown', function(e){
                 if(e.which == 13){
                     if(scope.returnClose){
-                        console.log('return-close true: closing keyboard');
                         element[0].blur();
                     }
                     if(scope.onReturn){
-                        console.log('on-return set: executing');
                         $timeout(function(){
                             scope.onReturn();
                         });                        
@@ -245,7 +243,6 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                                 }
 
                                 var updatedNotification = dayDate.notification;
-                                console.log(updatedNotification);
                                 updatedNotification.text = notificationMessage;
                                 dayDate.notification = updatedNotification;
                                 $cordovaLocalNotification.update(updatedNotification);
@@ -257,7 +254,6 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                 i++;
             }
         }
-        console.log(notifications);
         $ionicPlatform.ready(function() {
             $cordovaLocalNotification.schedule(notifications);
         });
@@ -276,15 +272,12 @@ xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
         }
 
         $scope.blockChanged = function() {
-            console.log($scope.blockClasses);
             window.localStorage['blockClasses'] = JSON.stringify($scope.blockClasses);
         }
 
         $scope.timeChanged = function() {
             window.localStorage['notificationTime'] = JSON.stringify($scope.notificationTimeSelector);
             Notifications();
-            console.log($scope.notificationTimeSelector);
-
         }
 
         $scope.closeKeyboard = function() {
@@ -303,7 +296,6 @@ xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicP
                 }
             },
             function(response) {
-                console.log(response);
                 createErrorPopup($ionicPopup, $scope);
             });
         }
@@ -331,7 +323,6 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
         function setAboutFromWeb() {
             About.getAbout(function(result) {
                 $scope.about = result[0];
-                console.log($scope.about);
             },
             function(error) {
                 console.log(error);
@@ -611,7 +602,7 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
 
             // Push Notification Setup
             var push = new Ionic.Push({
-              "debug": true
+              "debug": false
             });
 
             push.register(function(token) {

@@ -25,15 +25,33 @@
     "shelljs": "^0.6.0"
   },
   "cordovaPlugins": [
-    "org.apache.cordova.device",
-    "com.ionic.keyboard",
     "cordova-plugin-inappbrowser",
-    "uk.co.whiteoctober.cordova.appversion",
     "cordova-plugin-whitelist",
-    "phonegap-plugin-push"
+    {
+      "locator": "https://github.com/katzer/cordova-plugin-local-notifications.git",
+      "id": "de.appplant.cordova.plugin.local-notification"
+    },
+    "cordova-plugin-device",
+    "cordova-plugin-app-event",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-console",
+    "ionic-plugin-keyboard",
+    "cordova-plugin-app-version",
+    {
+      "id": "phonegap-plugin-push",
+      "locator": "phonegap-plugin-push",
+      "variables": {
+        "SENDER_ID": "191770913690"
+      }
+    }
   ],
   "cordovaPlatforms": [
     "ios",
-    "android"
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
   ]
 }
