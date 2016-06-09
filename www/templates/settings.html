@@ -6,6 +6,10 @@
     <form name="myForm" class="settings-form" ng-controller="SettingsCtrl as settingsCtrl">
         <label for="notificationTimeSelector">Daily Notifications: </label>
         <input type="time" id="notificationTimeSelector" ng-model="notificationTimeSelector" ng-change="timeChanged()"/>
+        <div class="grad-setting">
+            <label for="gradCheckbox">Grad Notifications: </label>
+            <input type="checkbox" name="checkbox" id="gradCheckbox" ng-model="gradStatus" ng-change="gradStatusChanged()"/>    
+        </div>
         <label for="block1Class"> Block 1 Class Name: </label>
         <input type="text" class="block-input" id="block1Class" ng-model="blockClasses[0]" on-return="closeKeyboard()" ng-change="blockChanged()" />
         <label for="block2Class"> Block 2 Class Name: </label>

@@ -20,7 +20,7 @@
   <access launch-external="yes" origin="http://*"/>
   <access launch-external="yes" origin="https://*"/>
   <access launch-external="yes" origin="mailto:*"/>
-  <hook type="after_prepare" src="package-hooks/ios9_allow_http.sh"/>
+  <!-- <hook type="after_prepare" src="package-hooks/ios9_allow_http.sh"/> -->
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
