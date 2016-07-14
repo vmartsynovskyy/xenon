@@ -20,7 +20,6 @@
   <access launch-external="yes" origin="http://*"/>
   <access launch-external="yes" origin="https://*"/>
   <access launch-external="yes" origin="mailto:*"/>
-  <hook type="after_prepare" src="package-hooks/ios9_allow_http.sh"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
@@ -55,6 +54,7 @@
     <splash src="resources\android\splash\drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
   <platform name="ios">
+    <hook type="after_prepare" src="package-hooks/ios9_allow_http.sh"/>
     <icon src="resources\ios\icon\icon.png" width="57" height="57"/>
     <icon src="resources\ios\icon\icon@2x.png" width="114" height="114"/>
     <icon src="resources\ios\icon\icon-40.png" width="40" height="40"/>
