@@ -10,7 +10,7 @@ Version 3.0 of the Windsor Secondary Mobile App
 * Displays teacher contact information
 * Different views (daily and weekly)
 
-********************************************************************************
+--------------------------------------------------------------------------------
 
 ## Technologies used:
 * JavaScript, HTML, CSS(using [SASS](http://sass-lang.com/))
@@ -19,7 +19,7 @@ Version 3.0 of the Windsor Secondary Mobile App
 * [Xcode](https://developer.apple.com/xcode/) to painstakingly build for iOS...
 * [Git](https://git-scm.com/)
 
-********************************************************************************
+--------------------------------------------------------------------------------
 
 ## Changelogs
 
