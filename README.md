@@ -15,7 +15,7 @@ Codename xenon
 ## Technologies used:
 * JavaScript, HTML, CSS(using [SASS](http://sass-lang.com/))
 * [Ionic Framework](http://ionicframework.com/)
-* [Angular](https://angularjs.org/)(part of Ionic Framework)
+* [Angular](https://angularjs.org/)(as a part of Ionic Framework)
 * [Xcode](https://developer.apple.com/xcode/) to painstakingly build for iOS...
 * [Git](https://git-scm.com/)
 
