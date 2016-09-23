@@ -1,5 +1,5 @@
-# xenon
-Version 3.0 of the Windsor Secondary Mobile App
+# Version 3.0 of the Windsor Secondary Mobile App
+Codename xenon
 
 ## Features:
 * Retrieves schedule information from the **[WS Companion API](https://github.com/MaldorLevr/neon-webapp)**, a Django web server
@@ -22,6 +22,26 @@ Version 3.0 of the Windsor Secondary Mobile App
 --------------------------------------------------------------------------------
 
 ## Changelogs
+
+Some changes are undocumented here because they were added directly through the [WS Companion API server](https://github.com/MaldorLevr/neon-webapp)
+
+3.1.0
+* Added local notifications for block rotations
+* Added push notifications
+* General fixing of stuff
+
+3.0.4
+* Fixed a bug with daylight savings time that caused the app to freeze
+
+3.0.3
+* fixed some internal bugs
+* fixed special days(pro-d days, etc.) not showing up properly on week view
+
+3.0.2
+* Fixed the rotations being displayed incorrectly.
+
+3.0.1 Changelog:
+* fixed bug with events not properly appearing in day view
 
 3.0 Changelog:
 * Complete remake of the app using the ionic framework!
