@@ -25,6 +25,9 @@ Codename xenon
 
 Some changes are undocumented here because they were added directly through the [WS Companion API server](https://github.com/MaldorLevr/neon-webapp)
 
+3.1.1
+* Added grad-specific notifications opt-in checkbox
+
 3.1.0
 * Added local notifications for block rotations
 * Added push notifications
