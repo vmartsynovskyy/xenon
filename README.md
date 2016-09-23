@@ -1,6 +1,28 @@
 # xenon
 Version 3.0 of the Windsor Secondary Mobile App
 
+## Features:
+* Retrieves schedule information from the **[WS Companion API](https://github.com/MaldorLevr/neon-webapp)**, a Django web server
+* Displays pertinent information to Windsor Secondary students about their schedules
+* Displays class rotation
+* Sends daily configurable notifications to users with schedule information
+* Algorithmic approach to finding the schedule so that some schedule information can be retrieved while offline
+* Displays teacher contact information
+* Different views (daily and weekly)
+
+********************************************************************************
+
+## Technologies used:
+* JavaScript, HTML, CSS(using [SASS](http://sass-lang.com/))
+* [Ionic Framework](http://ionicframework.com/)
+* [Angular](https://angularjs.org/)(part of Ionic Framework)
+* [Xcode](https://developer.apple.com/xcode/) to painstakingly build for iOS...
+* [Git](https://git-scm.com/)
+
+********************************************************************************
+
+## Changelogs
+
 3.0 Changelog:
 * Complete remake of the app using the ionic framework!
 * Material-ish redesign
