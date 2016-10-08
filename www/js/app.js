@@ -3,9 +3,9 @@
 var DEFAULT_ABOUT = {
     about: '<p>\r\nWS Companion gives Windsor Secondary students the ability to find out' +
     ' about events happening at their school, check what classes they have next, find teacher' +
-    ' contact information, and find websites and blogs maintained by Windsor Secondary staff.' + 
+    ' contact information, and find websites and blogs maintained by Windsor Secondary staff.' +
     ' \r\n</p>\r\n\r\n<p>\r\nLead Developer: Vadym Martsynovskyy\r\n</p>\r\n<p>\r\nIdea and ' +
-    'Original App: Chris Bolton\r\n</p>\r\n<p>\r\nData Entry: Lukas Kocsis\r\n</p>\r\n\r\n<p>\r\n' + 
+    'Original App: Chris Bolton\r\n</p>\r\n<p>\r\nData Entry: Lukas Kocsis\r\n</p>\r\n\r\n<p>\r\n' +
     'WS Companion is an unofficial app created by Windsor Secondary students that is not maintained' +
     'by the North Vancouver School District or Windsor Secondary.\r\n</p>',
     support_email: 'vadym1@shaw.ca'
@@ -61,16 +61,20 @@ xenon.directive('input', function($timeout){
                     if(scope.onReturn){
                         $timeout(function(){
                             scope.onReturn();
-                        });                        
+                        });
                     }
-                } 
-            });   
+                }
+            });
         }
     }
 });
 
 xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider) {
     angular.extend(CacheFactoryProvider.defaults, {storageMode: 'localStorage'});
+
+    $ionicConfigProvider.views.transition('ios');
+    $ionicConfigProvider.tabs.position('top');
+
     $stateProvider.state('week', {
         url: '/week?date',
             views: {
@@ -220,14 +224,14 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
                     notificationDate.notification = notification;
                 }
                 notifications.push(notification);
-                Day.getDay({date: notificationDate.getDate(), 
+                Day.getDay({date: notificationDate.getDate(),
                             month:notificationDate.getMonth() + 1,
                             year: notificationDate.getFullYear(),},
                     function(result) {
                         if (result.length > 0) {
                             var dayDate = new Date(result[0].date);
                             var dayName = result[0].name;
-                            var dayType = result[0].day_type;  
+                            var dayType = result[0].day_type;
                             var dayAnnouncement = result[0].announcement;
                             var notificationMessage;
 
@@ -272,7 +276,7 @@ xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
         }
 
         $scope.blockChanged = function() {
-            window.localStorage['blockClasses'] = JSON.stringify($scope.blockClasses);
+            $cordovaNativeStorage.setItem("blockClasses", JSON.stringify($scope.blockClasses));
         }
 
         $scope.timeChanged = function() {
@@ -387,12 +391,12 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
 xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vacation', 'YearStart', '$ionicPopup',
     function ($scope, $location, CacheFactory, Day, Vacation, YearStart, $ionicPopup) {
       function setDayFromWeb() {
-        Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()}, 
+        Day.getDay({date: $scope.day.getDate(), month: $scope.day.getMonth() + 1, year: $scope.day.getFullYear()},
         function (result) {
             // changes $scope.day once data is retrieved from web API
             if (result.length > 0) {
                 $scope.day.name = result[0].name;
-                $scope.day.day_type = result[0].day_type;  
+                $scope.day.day_type = result[0].day_type;
                 $scope.day.announcement = result[0].announcement;
                 if (result[0].day_blocks.length > 0) {
                     $scope.day.blocks = result[0].day_blocks.concat(result[0].day_events);
@@ -431,7 +435,7 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
     if (!$location.search().date) {
         renderDayFromDate(new Date(Date.now()));
     } else {
-        renderDayFromDate(new Date(parseInt($location.search().date))); 
+        renderDayFromDate(new Date(parseInt($location.search().date)));
     }
 
     $scope.doRefresh = function() {
@@ -471,7 +475,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 if (date.valueOf() === new Date(Date.now()).setHours(0,0,0,0)) {
                     date.today = true;
                 }
-                
+
                 var duringVacation = date.isDuringVacation();
 
                 date.generateBlocks();
@@ -479,7 +483,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 if (rotation && !duringVacation) {
                     date.rotation = rotation[0] + ' ' + rotation[1] + ' ' + rotation[2] + ' ' + rotation[3];
                 }
-                
+
                 if (duringVacation) {
                     date.name = duringVacation.name;
                 }
@@ -587,7 +591,7 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
 
-            $cordovaStatusbar.styleHex('#37bc61');
+            $cordovaStatusbar.styleHex('#FFFFFF');
 
             cordova.getAppVersion(function(version) {
                     appVersion = version;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.codeandconfusion.neon" version="3.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>WS Companion</name>
-  <description>
-        The unofficial Windsor Secondary Mobile App which supports the school schedules, contact information, and other useful resources for students.
+  <description>&#xD;&#xD;&#xD;
+        The unofficial Windsor Secondary Mobile App which supports the school schedules, contact information, and other useful resources for students.&#xD;&#xD;&#xD;
     </description>
-  <author email="vadym1@shaw.ca">
-      Vadym Martsynovskyy
+  <author email="vadym1@shaw.ca">&#xD;&#xD;&#xD;
+      Vadym Martsynovskyy&#xD;&#xD;&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>
@@ -50,6 +50,7 @@
     <icon src="resources\ios\icon\icon@2x.png" width="114" height="114"/>
     <icon src="resources\ios\icon\icon-40.png" width="40" height="40"/>
     <icon src="resources\ios\icon\icon-40@2x.png" width="80" height="80"/>
+    <icon src="resources\ios\icon\icon-40@3x.png" width="120" height="120"/>
     <icon src="resources\ios\icon\icon-50.png" width="50" height="50"/>
     <icon src="resources\ios\icon\icon-50@2x.png" width="100" height="100"/>
     <icon src="resources\ios\icon\icon-60.png" width="60" height="60"/>
@@ -59,6 +60,7 @@
     <icon src="resources\ios\icon\icon-72@2x.png" width="144" height="144"/>
     <icon src="resources\ios\icon\icon-76.png" width="76" height="76"/>
     <icon src="resources\ios\icon\icon-76@2x.png" width="152" height="152"/>
+    <icon src="resources\ios\icon\icon-83.5@2x.png" width="167" height="167"/>
     <icon src="resources\ios\icon\icon-small.png" width="29" height="29"/>
     <icon src="resources\ios\icon\icon-small@2x.png" width="58" height="58"/>
     <icon src="resources\ios\icon\icon-small@3x.png" width="87" height="87"/>
