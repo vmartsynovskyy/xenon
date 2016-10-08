@@ -9,7 +9,7 @@ var DEFAULT_ABOUT = {
     'WS Companion is an unofficial app created by Windsor Secondary students that is not maintained' +
     'by the North Vancouver School District or Windsor Secondary.\r\n</p>',
     support_email: 'vadym1@shaw.ca'
-}
+};
 
 var DEFAULT_YEARSTARTS = [
     {
@@ -45,6 +45,20 @@ function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     //             ]});
 }
 
+function sendDeviceToken(deviceToken, $http) {
+    var data =
+    {
+          'token' : deviceToken,
+          'gradStatus' : JSON.parse(window.localStorage['gradStatus']),
+    };
+
+    $http({
+      'method': 'POST',
+      'url': DEFAULT_DOMAIN + 'register-device/',
+      'data': data,
+    });
+}
+
 xenon.directive('input', function($timeout){
      return {
          restrict: 'E',
@@ -66,7 +80,7 @@ xenon.directive('input', function($timeout){
                 }
             });
         }
-    }
+    };
 });
 
 xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider) {
@@ -189,10 +203,11 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
             }
         });
         var notificationDate = new Date();
+        var notificationTime;
         if (window.localStorage['notificationTime']) {
-            var notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
+            notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
         } else {
-            var notificationTime = new Date(1456848000000);
+            notificationTime = new Date(1456848000000);
         }
         notificationDate.setHours(notificationTime.getHours(), notificationTime.getMinutes(),0,0);
         var notifications = [];
@@ -264,15 +279,27 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
     };
 }]);
 
-xenon.controller('SettingsCtrl', ['$scope', 'Notifications',
-    function($scope, Notifications) {
+xenon.controller('SettingsCtrl', ['$scope', '$http', 'Notifications',
+    function($scope, $http, Notifications) {
         if (window.localStorage['blockClasses']) {
             $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
         }
+
         if (window.localStorage['notificationTime']) {
             $scope.notificationTimeSelector = new Date(JSON.parse(window.localStorage['notificationTime']));
         } else {
             window.localStorage['notificationTime'] = JSON.stringify(new Date(1456848000000));
+        }
+
+        if(window.localStorage['gradStatus']) {
+            $scope.gradStatus = JSON.parse(window.localStorage['gradStatus']);
+        } else {
+            window.localStorage['gradStatus'] = JSON.stringify(false);
+        }
+
+        $scope.gradStatusChanged = function() {
+            window.localStorage['gradStatus'] = JSON.stringify($scope.gradStatus);
+            sendDeviceToken(window.localStorage.deviceToken, $http);
         }
 
         $scope.blockChanged = function() {
@@ -610,12 +637,10 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
             });
 
             push.register(function(token) {
-              console.log("Device token:",token.token);
-              $http({
-                'method': 'POST',
-                'url': DEFAULT_DOMAIN + 'register-device/',
-                'data': token.token,
-              });
+              console.log("Device token:", token.token);
+
+              window.localStorage.deviceToken = token.token;
+              sendDeviceToken(token.token, $http);
               push.saveToken(token);  // persist the token in the Ionic Platform
             });
         });

@@ -34,7 +34,7 @@
         </ion-item>
     </ion-list>
     <div class="staff-section">Support Staff</div>
-    <ion-list ng-repeat="staff_member in staff | filter: {type: 'support'} | orderBy: 'name.split(\' \')[2]'"" class="staff-container">
+    <ion-list ng-repeat="staff_member in staff | filter: {type: 'support'} | orderBy: 'name.split(\' \')[2]'" class="staff-container">
         <ion-item ng-click="show_staff = !show_staff" class="staff-member">
             {{staff_member.name}} <span class="staff-title">{{staff_member.title}}</span>
             <span ng-if="show_staff" class="staff-info">

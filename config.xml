@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.codeandconfusion.neon" version="3.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.codeandconfusion.neon" version="3.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>WS Companion</name>
-  <description>&#xD;&#xD;&#xD;
-        The unofficial Windsor Secondary Mobile App which supports the school schedules, contact information, and other useful resources for students.&#xD;&#xD;&#xD;
+  <description>
+        The unofficial Windsor Secondary Mobile App which supports the school schedules, contact information, and other useful resources for students.
     </description>
-  <author email="vadym1@shaw.ca">&#xD;&#xD;&#xD;
-      Vadym Martsynovskyy&#xD;&#xD;&#xD;
+  <author email="vadym1@shaw.ca">
+      Vadym Martsynovskyy
     </author>
   <content src="index.html"/>
   <access origin="*"/>
@@ -46,6 +46,7 @@
     <splash src="resources\android\splash\drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
   <platform name="ios">
+    <hook type="after_prepare" src="package-hooks/ios9_allow_http.sh"/>
     <icon src="resources\ios\icon\icon.png" width="57" height="57"/>
     <icon src="resources\ios\icon\icon@2x.png" width="114" height="114"/>
     <icon src="resources\ios\icon\icon-40.png" width="40" height="40"/>
