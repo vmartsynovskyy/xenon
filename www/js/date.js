@@ -25,6 +25,9 @@ Date.prototype.getTwoDigitDate = function() {
         return '0' + date;
     }
 };
+Date.prototype.isWeekend = function() {
+    return this.getDay() === 0 || this.getDay() === 6;
+}
 
 Date.prototype.getNumberOfWeekdaysSince = function(startDate) {
   startDate.setHours(0, 0, 0, 0);
@@ -128,9 +131,36 @@ Date.prototype.getPrettified = function() {
 Date.prototype.generateBlocks = function () {
     this.blocks = [];
     var rotation = this.getRotation();
-    if (localStorage['blockClasses']) {
-        var classes = JSON.parse(localStorage['blockClasses']);
-    }
+    var a = this;
+    angular.element(document.body).injector()
+    .get('$cordovaNativeStorage').getItem("blockClasses")
+    .then(function(value){
+        var classes = value;
+        for (var i = 0; i < 4; i++) {
+            if (classes[rotation[i] - 1]) {
+                var displayClass = classes[rotation[i] - 1];
+                if (displayClass.length > 10) {
+                    displayClass = displayClass.substring(0, 7) + '...';
+                }
+            }
+            var block = {
+                start_time: '',
+                end_time: '',
+                rotation: rotation[i],
+                class: displayClass,
+            };
+            block.start_time = blockStarts[i];
+            block.end_time = blockEnds[i];
+            this.blocks.push(block);
+        }
+        this.blocks.sort(compareBlockTimes);
+    }.bind(this));
+
+    var displayClass = '';
+
+    // if (localStorage['blockClasses']) {
+    //     var classes = JSON.parse(localStorage['blockClasses']);
+    // }
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return null;
@@ -156,30 +186,6 @@ Date.prototype.generateBlocks = function () {
         eventTimes =    ['09:50:00', '11:25:00', '12:50:00'];
         eventNames =    ['15 Minute Break', '5 Minute Break', '50 Minute Lunch'];
     }
-
-    for (var i = 0; i < 4; i++) {
-        if (localStorage['blockClasses']) {
-            if (classes[rotation[i] - 1]) {
-                var displayClass = classes[rotation[i] - 1];
-                if (displayClass.length > 10) {
-                    displayClass = displayClass.substring(0, 7) + '...';
-                }
-            } else {
-                var displayClass = '';
-            }
-        } else {
-            var displayClass = '';
-        }
-        var block = {
-            start_time: '',
-            end_time: '',
-            rotation: rotation[i],
-            class: displayClass,
-        };
-        block.start_time = blockStarts[i];
-        block.end_time = blockEnds[i];
-        this.blocks.push(block);
-    }
     for (var i = 0; i < eventNames.length; i++) {
         var event = {
             name: '',
@@ -199,7 +205,7 @@ Date.prototype.isDuringVacation = function() {
             vacations[i].start_date = new Date(Date.parse(vacations[i].start_date));
             vacations[i].end_date = new Date(Date.parse(vacations[i].end_date));
         }
-        
+
         for(var i = 0; i < vacations.length; i++) {
             if (this.valueOf() > vacations[i].start_date.valueOf() && this.valueOf() < vacations[i].end_date.valueOf()) {
                 return vacations[i];
@@ -302,5 +308,5 @@ function compareBlockTimes(block1, block2) {
         return 1;
     } else {
         return 0;
-    }    
+    }
 }

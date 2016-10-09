@@ -43,10 +43,21 @@
       "variables": {
         "SENDER_ID": "191770913690"
       }
-    }
+    },
+    "cordova-plugin-nativestorage"
   ],
   "cordovaPlatforms": [
     "ios",
-    "android"
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    },
+    {
+      "platform": "ios",
+      "version": "",
+      "locator": "ios"
+    }
   ]
 }

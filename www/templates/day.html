@@ -12,7 +12,7 @@
                 {{day.announcement}}
             </div>
             <div class="blocks-container" ng-if="day.blocks">
-                <div class="block" ng-repeat="block in day.blocks">
+                <div class="block" ng-repeat="block in day.blocks" on-hold="onHold()">
                     <div ng-if="block.hasOwnProperty('start_time')">
                         <div class="rotation">{{block.rotation}}<span ng-if="block.class"> - <span class="class-name">{{block.class}}</span></span></div>
                         <div class="time">{{toAmPm(block.start_time)}} - {{toAmPm(block.end_time)}}</div>

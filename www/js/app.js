@@ -1,3 +1,11 @@
+/*jslint browser: true*/
+/* globals cordova */
+/* globals angular */
+/* globals console */
+/* globals Ionic */
+/* globals compareBlockTimes */
+/* globals twentyFourHourToAmPm */
+
 'use strict';
 
 var DEFAULT_ABOUT = {
@@ -22,7 +30,7 @@ var DEFAULT_YEARSTARTS = [
 
 var DEFAULT_DOMAIN = "http://windsorapp.me/";
 
-var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate', 'ngCordova']);
+var xenon = angular.module('xenon', ['ionic','ionic.service.core', 'ngResource', 'angular-cache', 'ngAnimate', 'ngCordova', 'ngCordova.plugins.nativeStorage']);
 
 function createErrorPopup(ionicPopup, scope, errTitle, errMessage, errButton) {
     errTitle = typeof errTitle !== 'undefined' ? errTitle : "No Internet Connection";
@@ -49,7 +57,7 @@ function sendDeviceToken(deviceToken, $http) {
     var data =
     {
           'token' : deviceToken,
-          'gradStatus' : JSON.parse(window.localStorage['gradStatus']),
+          'gradStatus' : JSON.parse(window.localStorage.gradStatus),
     };
 
     $http({
@@ -204,8 +212,8 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
         });
         var notificationDate = new Date();
         var notificationTime;
-        if (window.localStorage['notificationTime']) {
-            notificationTime = new Date(JSON.parse(window.localStorage['notificationTime']));
+        if (window.localStorage.notificationTime) {
+            notificationTime = new Date(JSON.parse(window.localStorage.notificationTime));
         } else {
             notificationTime = new Date(1456848000000);
         }
@@ -213,7 +221,7 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
         var notifications = [];
         var i = 0;
         while (i < 10) {
-            if (notificationDate.getDay() == 0) {
+            if (notificationDate.getDay() === 0) {
                 notificationDate.incrementDate(1);
             } else if (notificationDate.getDay() == 6) {
                 notificationDate.incrementDate(2);
@@ -279,41 +287,41 @@ xenon.factory('Notifications', ['Day', '$cordovaLocalNotification', '$ionicPlatf
     };
 }]);
 
-xenon.controller('SettingsCtrl', ['$scope', '$http', 'Notifications',
-    function($scope, $http, Notifications) {
-        if (window.localStorage['blockClasses']) {
-            $scope.blockClasses = JSON.parse(window.localStorage['blockClasses']);
+xenon.controller('SettingsCtrl', ['$scope', '$http', 'Notifications', '$cordovaNativeStorage',
+    function($scope, $http, Notifications, $cordovaNativeStorage) {
+        $cordovaNativeStorage.getItem("blockClasses").then(function(value) {
+            $scope.blockClasses = value;
+        });
+
+        if (window.localStorage.notificationTime) {
+            $scope.notificationTimeSelector = new Date(JSON.parse(window.localStorage.notificationTime));
+        } else {
+            window.localStorage.notificationTime = JSON.stringify(new Date(1456848000000));
         }
 
-        if (window.localStorage['notificationTime']) {
-            $scope.notificationTimeSelector = new Date(JSON.parse(window.localStorage['notificationTime']));
+        if(window.localStorage.gradStatus) {
+            $scope.gradStatus = JSON.parse(window.localStorage.gradStatus);
         } else {
-            window.localStorage['notificationTime'] = JSON.stringify(new Date(1456848000000));
-        }
-
-        if(window.localStorage['gradStatus']) {
-            $scope.gradStatus = JSON.parse(window.localStorage['gradStatus']);
-        } else {
-            window.localStorage['gradStatus'] = JSON.stringify(false);
+            window.localStorage.gradStatus = JSON.stringify(false);
         }
 
         $scope.gradStatusChanged = function() {
-            window.localStorage['gradStatus'] = JSON.stringify($scope.gradStatus);
+            window.localStorage.gradStatus = JSON.stringify($scope.gradStatus);
             sendDeviceToken(window.localStorage.deviceToken, $http);
-        }
+        };
 
         $scope.blockChanged = function() {
-            $cordovaNativeStorage.setItem("blockClasses", JSON.stringify($scope.blockClasses));
-        }
+            $cordovaNativeStorage.setItem("blockClasses", $scope.blockClasses);
+        };
 
         $scope.timeChanged = function() {
-            window.localStorage['notificationTime'] = JSON.stringify($scope.notificationTimeSelector);
+            window.localStorage.notificationTime = JSON.stringify($scope.notificationTimeSelector);
             Notifications();
-        }
+        };
 
         $scope.closeKeyboard = function() {
             cordova.plugins.Keyboard.close();
-        }
+        };
 }]);
 
 
@@ -343,10 +351,10 @@ xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicP
             }
             setDiscoverFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
-        }
+        };
         $scope.openLink = function(url) {
             window.open(url, '_system');
-        }
+        };
 }]);
 
 xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
@@ -376,11 +384,11 @@ xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
             }
             setAboutFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
-        }
+        };
 
         $scope.openLink = function(url) {
             window.open(url, '_system');
-        }
+        };
 }]);
 
 xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup',
@@ -408,11 +416,11 @@ xenon.controller('ContactCtrl', ['$scope', 'CacheFactory', 'Staff', '$ionicPopup
             }
             setStaffFromWeb();
             $scope.$broadcast('scroll.refreshComplete');
-        }
+        };
 
         $scope.openLink = function(url) {
             window.open(url, '_system');
-        }
+        };
 }]);
 
 xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vacation', 'YearStart', '$ionicPopup',
@@ -441,11 +449,11 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             $scope.day.blocks.sort(compareBlockTimes);
         });
         Vacation.getVacations(function(result) {
-            window.localStorage['vacations'] = JSON.stringify(result);
+            window.localStorage.vacations = JSON.stringify(result);
         });
         YearStart.getYearStarts(function(result) {
-            window.localStorage['yearStartsFetched'] = 'true';
-            window.localStorage['yearStarts'] = JSON.stringify(result);
+            window.localStorage.yearStartsFetched = 'true';
+            window.localStorage.yearStarts = JSON.stringify(result);
         });
       }
 
@@ -477,7 +485,7 @@ xenon.controller('DayCtrl', ['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
         }
         setDayFromWeb();
         $scope.$broadcast('scroll.refreshComplete');
-    }
+    };
 }]);
 
 xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vacation', 'YearStart', '$ionicPopup', '$ionicViewSwitcher',
@@ -488,12 +496,12 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
             date_arg.setHours(0, 0, 0, 0);
             var next_date = date_arg;
             Vacation.getVacations(function(result) {
-                window.localStorage['vacations'] = JSON.stringify(result);
+                window.localStorage.vacations = JSON.stringify(result);
             });
 
             YearStart.getYearStarts(function(result) {
-                window.localStorage['yearStarts'] = JSON.stringify(result);
-                window.localStorage['yearStartsFetched'] = 'true';
+                window.localStorage.yearStarts = JSON.stringify(result);
+                window.localStorage.yearStartsFetched = 'true';
             });
             for (var i = 0; i < 7; i++) {
                 var date = new Date(next_date);
@@ -583,7 +591,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                 return true;
             }
             return $location.search().date == new Date(Date.now()).getStartOfWeek().valueOf();
-        }
+        };
 
         $scope.switchToThisWeek = function() {
             if ($location.search().date) {
@@ -597,7 +605,7 @@ xenon.controller('WeekCtrl',['$scope', '$location', 'CacheFactory', 'Day', 'Vaca
                     $location.search('date', $scope.weekStart.valueOf());
                 }
             }
-        }
+        };
 
         if (!$location.search().date) {
             $scope.weekStart = new Date(Date.now()).getStartOfWeek();
@@ -618,7 +626,7 @@ xenon.run(['$ionicPlatform', 'Notifications', '$cordovaLocalNotification', '$roo
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
 
-            $cordovaStatusbar.styleHex('#FFFFFF');
+            $cordovaStatusbar.styleHex('#007F0E');
 
             cordova.getAppVersion(function(version) {
                     appVersion = version;
