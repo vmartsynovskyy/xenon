@@ -127,16 +127,6 @@ xenon.config(function($stateProvider, CacheFactoryProvider, $ionicConfigProvider
         }
     });
 
-    $stateProvider.state('discover', {
-        url: '/discover',
-        views: {
-            'discover': {
-                templateUrl: 'templates/discover.html',
-                controller: 'DiscoverCtrl'
-            },
-        }
-    });
-
     $stateProvider.state('about', {
         url: '/about',
         views: {
@@ -169,13 +159,6 @@ xenon.factory('Staff', function($resource, CacheFactory) {
     CacheFactory('staff');
     return $resource(DEFAULT_DOMAIN + 'staff/', {}, {
         getStaff: {cache: CacheFactory.get('staff'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'staff/'},
-    });
-});
-
-xenon.factory('Discover', function($resource, CacheFactory) {
-    CacheFactory('discover');
-    return $resource(DEFAULT_DOMAIN + 'discover/', {}, {
-        getDiscover: {cache: CacheFactory.get('discover'), isArray: true, method: 'GET', url: DEFAULT_DOMAIN + 'discover/'},
     });
 });
 
