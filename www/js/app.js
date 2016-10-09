@@ -307,39 +307,6 @@ xenon.controller('SettingsCtrl', ['$scope', '$http', 'Notifications', '$cordovaN
         };
 }]);
 
-
-xenon.controller('DiscoverCtrl', ['$scope', 'CacheFactory', 'Discover', '$ionicPopup',
-    function($scope, CacheFactory, Discover, $ionicPopup) {
-        function setDiscoverFromWeb() {
-            Discover.getDiscover(
-            function(result) {
-                if (result.length > 0) {
-                    $scope.discover = result;
-                }
-            },
-            function(response) {
-                createErrorPopup($ionicPopup, $scope);
-            });
-        }
-        setDiscoverFromWeb();
-        $scope.doRefresh = function() {
-            if (navigator.connection.type === 'none') {
-                createErrorPopup($ionicPopup, $scope);
-            } else {
-                try {
-                    CacheFactory.get('discover').removeAll();
-                } catch (e) {
-                    console.log(e);
-                }
-            }
-            setDiscoverFromWeb();
-            $scope.$broadcast('scroll.refreshComplete');
-        };
-        $scope.openLink = function(url) {
-            window.open(url, '_system');
-        };
-}]);
-
 xenon.controller('AboutCtrl', ['$scope', '$ionicPopup', 'About', 'CacheFactory',
     function($scope, $ionicPopup, About, CacheFactory) {
         function setAboutFromWeb() {
