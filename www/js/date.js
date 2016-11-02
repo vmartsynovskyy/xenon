@@ -157,17 +157,13 @@ Date.prototype.generateBlocks = function () {
     }.bind(this));
 
     var displayClass = '';
-
-    // if (localStorage['blockClasses']) {
-    //     var classes = JSON.parse(localStorage['blockClasses']);
-    // }
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return null;
     } else if (this.day_type === 'pro-d') {
         return null;
     } else if (this.day_type === 'early-d'){
-        blockStarts =   ['08:30:00', '09:35:00', '11:10:00', '13:15:00'];
+        blockStarts =   ['08:30:00', '09:35:00', '11:10:00', '12:15:00'];
         blockEnds =     ['09:30:00', '10:35:00', '12:10:00', '13:15:00'];
         eventTimes =    ['09:30:00', '10:35:00', '12:10:00'];
         eventNames =    ['5 Minute Break', '35 Minute Lunch', '5 Minute Break'];

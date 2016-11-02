@@ -64,6 +64,7 @@ $normal_font: 'Roboto-Medium', sans-serif;
 }
 
 .settings-form {
+    margin-top: 2.5%;
     margin-left: 2.5%;
     width: 95%;
 }
@@ -313,6 +314,10 @@ $normal_font: 'Roboto-Medium', sans-serif;
     transition-delay: 0.2s;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.26);
     font: 120% $light_font;
+}
+
+#dailyCheckbox {
+    color: black;
 }
 
 .date .month {
