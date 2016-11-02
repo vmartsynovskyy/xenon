@@ -137,8 +137,9 @@ Date.prototype.generateBlocks = function () {
     .then(function(value){
         var classes = value;
         for (var i = 0; i < 4; i++) {
+            var displayClass = "";
             if (classes[rotation[i] - 1]) {
-                var displayClass = classes[rotation[i] - 1];
+                displayClass = classes[rotation[i] - 1];
                 if (displayClass.length > 10) {
                     displayClass = displayClass.substring(0, 7) + '...';
                 }
@@ -169,8 +170,6 @@ Date.prototype.generateBlocks = function () {
         }
         this.blocks.sort(compareBlockTimes);
     }.bind(this));
-
-    var displayClass = '';
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return null;
