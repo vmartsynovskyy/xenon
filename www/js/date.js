@@ -154,6 +154,20 @@ Date.prototype.generateBlocks = function () {
             this.blocks.push(block);
         }
         this.blocks.sort(compareBlockTimes);
+    }.bind(this), function(value) {
+        for (var i = 0; i < 4; i++) {
+            displayClass = "";
+            var block = {
+                start_time: '',
+                end_time: '',
+                rotation: rotation[i],
+                class: displayClass,
+            };
+            block.start_time = blockStarts[i];
+            block.end_time = blockEnds[i];
+            this.blocks.push(block);
+        }
+        this.blocks.sort(compareBlockTimes);
     }.bind(this));
 
     var displayClass = '';
