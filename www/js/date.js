@@ -131,45 +131,49 @@ Date.prototype.getPrettified = function() {
 Date.prototype.generateBlocks = function () {
     this.blocks = [];
     var rotation = this.getRotation();
-    var a = this;
-    angular.element(document.body).injector()
-    .get('$cordovaNativeStorage').getItem("blockClasses")
-    .then(function(value){
-        var classes = value;
-        for (var i = 0; i < 4; i++) {
-            var displayClass = "";
-            if (classes[rotation[i] - 1]) {
-                displayClass = classes[rotation[i] - 1];
-                if (displayClass.length > 10) {
-                    displayClass = displayClass.substring(0, 7) + '...';
+    if (rotation !== undefined) {
+        angular.element(document.body).injector()
+        .get('$cordovaNativeStorage').getItem("blockClasses")
+        .then(
+            function(classes){
+                rotation.forEach(function(blockNum, i) {
+                    var displayClass = "";
+                    if (classes[blockNum - 1] !== undefined) {
+                        displayClass = classes[blockNum - 1];
+                        if (displayClass.length > 10) {
+                            displayClass = displayClass.substring(0, 7) + '...';
+                        }
+                    }
+                    var block = {
+                        start_time: '',
+                        end_time: '',
+                        rotation: blockNum,
+                        class: displayClass,
+                    };
+                    block.start_time = blockStarts[i];
+                    block.end_time = blockEnds[i];
+                    this.blocks.push(block);
+                }.bind(this));
+                this.blocks.sort(compareBlockTimes);
+            }.bind(this),
+            function(value) {
+                for (var i = 0; i < 4; i++) {
+                    displayClass = "";
+                    var block = {
+                        start_time: '',
+                        end_time: '',
+                        rotation: rotation[i],
+                        class: displayClass,
+                    };
+                    block.start_time = blockStarts[i];
+                    block.end_time = blockEnds[i];
+                    this.blocks.push(block);
                 }
-            }
-            var block = {
-                start_time: '',
-                end_time: '',
-                rotation: rotation[i],
-                class: displayClass,
-            };
-            block.start_time = blockStarts[i];
-            block.end_time = blockEnds[i];
-            this.blocks.push(block);
-        }
-        this.blocks.sort(compareBlockTimes);
-    }.bind(this), function(value) {
-        for (var i = 0; i < 4; i++) {
-            displayClass = "";
-            var block = {
-                start_time: '',
-                end_time: '',
-                rotation: rotation[i],
-                class: displayClass,
-            };
-            block.start_time = blockStarts[i];
-            block.end_time = blockEnds[i];
-            this.blocks.push(block);
-        }
-        this.blocks.sort(compareBlockTimes);
-    }.bind(this));
+                this.blocks.sort(compareBlockTimes);
+            }.bind(this)
+        );
+    }
+    
     var blockStarts, blockEnds, eventTimes, eventNames;
     if (this.getDay() === 0 || this.getDay() === 6){
         return null;

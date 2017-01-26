@@ -694,6 +694,16 @@ xenon.run(['$ionicPlatform', 'notifications', '$cordovaLocalNotification', '$roo
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
             }
+            
+            var nativeStorageFound = false;
+            while(nativeStorageFound != true) {
+                try {
+                    $cordovaNativeStorage.getItem("gradStatus");
+                    nativeStorageFound = true;
+                } catch (ex) {
+
+                }
+            }
 
             $cordovaStatusbar.styleHex('#007F0E');
 
